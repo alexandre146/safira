@@ -1,0 +1,40 @@
+{% extends "base_aluno.html" %}
+
+{% load bootstrap %}
+
+{% block page_title %} Exercício {% endblock %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Exercício: {{ exercicio.enunciado }}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                                {{ form|bootstrap }}
+                                <button type="submit" class="btn btn-sm btn-success">Salvar</button>
+                                <a href={% url "programacao:aluno_atividade" exercicio.atividade_id %}><button type="button" class="btn btn-sm btn-primary">Cancelar</button></a>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}

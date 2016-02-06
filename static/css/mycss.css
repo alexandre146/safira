@@ -1,0 +1,79 @@
+.chat{
+    position: relative;
+    display: block;
+    margin: 0 5px 10px 5px;
+}
+
+
+.chat-title {
+    position: relative;
+    padding: 7px 12px;
+    margin: 0px;
+    font-size: 14px;
+    background-color: rgba(177, 187, 116, 0.5);
+
+    border-radius: 0px 15px 0px 0px;
+
+    width: 30%;
+}
+
+.chat-direita{
+    border-radius: 15px 0px 0px 0px;
+    left: 70%;
+}
+
+
+.esquerda {
+    position:relative;
+    background-color: rgba(51, 150, 201, 0.59);
+    /*min-height:30px !important;*/
+    max-width:50% !important;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 0px;
+}
+
+.balao-professor {
+    position:relative;
+    background-color: rgba(201, 5, 0, 0.59);
+    /*min-height:30px !important;*/
+    max-width:50% !important;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 0px;
+}
+
+.direita {
+    position: relative;
+    background-color: rgba(54, 186, 71, 0.56);
+    max-width: 50% !important;
+    left: 50%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 15px;
+}
+
+
+.col-leg-6 {
+
+    height: 200px;
+    overflow: scroll;
+}
+
+
+.chat-texto{
+    word-wrap: break-word;
+    padding: 10px;
+}
+
+
+.destaque{
+    color: #10dd00;
+}
+
+.glyphicon-ban-circle.destaque{
+    color: #f91420;
+}

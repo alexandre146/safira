@@ -1,0 +1,27 @@
+import unittest
+from unittest import TextTestRunner
+
+from aluno1 import soma
+ 
+class AddTest(unittest.TestCase):
+   def setUp(self):
+      pass
+ 
+   def tearDown(self):
+      pass
+ 
+   def test_positive_add(self):
+      self.assertEqual(soma(10,23), 33)
+      self.assertEqual(soma(11,23), 34)
+      self.assertEqual(soma(1,1), 12)
+ 
+   def test_negative_add(self):
+       self.assertEqual(soma(-12,23), 11)
+ 
+if __name__=='__main__':
+    test_suite = unittest.TestLoader().loadTestsFromTestCase(AddTest)
+    test_result = TextTestRunner(verbosity=2).run(test_suite)
+    print(test_result.failures)
+    print(test_result.errors)
+    print(test_result.testsRun)
+    #unittest.main()

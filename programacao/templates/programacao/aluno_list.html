@@ -1,0 +1,10 @@
+<h1>Alunos</h1>
+<ul>
+{% for obj in object_list %}
+    <li>{{ obj.titulo }} :
+    <a href="{% url "programacao:aluno_edit" obj.id %}">{{ obj.nome }}</a>
+    <a href="{% url "programacao:aluno_delete" obj.id %}">delete</a>
+</li>
+{% endfor %}
+</ul>
+<a href="{% url "programacao:aluno_new" %}">New</a>

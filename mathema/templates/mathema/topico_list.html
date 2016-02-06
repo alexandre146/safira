@@ -1,0 +1,10 @@
+<h1>Topicos</h1>
+<ul>
+{% for obj in object_list %}
+    <li>{{ obj.titulo }} :
+    <a href="{% url "mathema:topico_edit" obj.id %}">{{ obj.titulo }}</a>
+    <a href="{% url "mathema:topico_delete" obj.id %}">delete</a>
+</li>
+{% endfor %}
+</ul>
+<a href="{% url "mathema:topico_new" %}">New</a>

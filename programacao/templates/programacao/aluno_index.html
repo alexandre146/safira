@@ -1,0 +1,126 @@
+{% extends "base_aluno_index.html" %}
+
+{% load bootstrap %}
+
+{% block top_comentarios %}
+<li>
+    <a href="#">
+        <div>
+            <strong>John Smith</strong>
+            <span class="pull-right text-muted">
+                <em>Yesterday</em>
+            </span>
+        </div>
+        <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+    </a>
+</li>
+{% endblock %}
+
+{% block top_atividades %}
+<li>
+    <a href="#">
+        <div>
+            <p>
+                <strong>Task 1</strong>
+                <span class="pull-right text-muted">40% Complete</span>
+            </p>
+            <div class="progress progress-striped active">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                    <span class="sr-only">40% Complete (success)</span>
+                </div>
+            </div>
+        </div>
+    </a>
+</li>
+<li class="divider"></li>
+<li>
+    <a class="text-center" href="#">
+        <strong>See All Tasks</strong>
+        <i class="fa fa-angle-right"></i>
+    </a>
+</li>
+{% endblock %}
+
+{% block top_notificacoes %}
+<li>
+    <a href="#">
+        <div>
+            <i class="fa fa-comment fa-fw"></i> Novo comentário
+            <span class="pull-right text-muted small">4 minutes ago</span>
+        </div>
+    </a>
+</li>
+<li class="divider"></li>
+<li>
+    <a href="#">
+        <div>
+            <i class="fa fa-tasks fa-fw"></i> Nova atividade
+            <span class="pull-right text-muted small">4 minutes ago</span>
+        </div>
+    </a>
+</li>
+<li class="divider"></li>
+<li>
+    <a class="text-center" href="#">
+        <strong>Todas as notificações</strong>
+        <i class="fa fa-angle-right"></i>
+    </a>
+</li>
+{% endblock %}
+
+<!-- Dashboard -->
+{% block qtd_avaliacoes %}5{% endblock %}
+{% block url_avaliacoes %}{% endblock %}
+
+{% block qtd_atividades %}12{% endblock %}
+{% block url_atividades %}{% endblock %}
+
+{% block qtd_comentarios %}26{% endblock %}
+{% block url_comentarios %}{% endblock %}
+
+{% block qtd_intervencao %}8{% endblock %}
+{% block url_intervencao %}{% endblock %}
+
+{% block quadro_atividade %}
+    {% if atividades_list %}
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Título</th>
+                <th>Deadline</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for atividade in atividades_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ atividade.titulo }}</td>
+                <td>{{ atividade.deadline }}</td>
+                <td class="center"><a href={% url "programacao:aluno_atividade" atividade.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="visualizar">Visualizar</button></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        Nenhuma atividade cadastrada!
+    {% endif %}
+{% endblock %}
+
+
+{% block quadro_notificacoes %}
+<a href="#" class="list-group-item">
+    <i class="fa fa-comment fa-fw"></i> Novo comentário
+    <span class="pull-right text-muted small"><em>4 minutes ago</em>
+    </span>
+</a>
+<a href="#" class="list-group-item">
+    <i class="fa fa-tasks fa-fw"></i> Nova atividade
+    <span class="pull-right text-muted small"><em>43 minutes ago</em>
+    </span>
+</a>
+{% endblock %}
+
+{% block url_notificacoes %}
+{% endblock %}

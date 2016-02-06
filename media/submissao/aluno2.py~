@@ -1,0 +1,12 @@
+# -*- coding: utf-8 -*-
+
+def soma(a, b):
+    result = a + b
+    return result
+
+#a = input()
+#b = input()
+#result = a + b
+
+#print("Hello")
+

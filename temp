@@ -1,0 +1,77 @@
+                                <label>Exercícios associados</label><br>
+                                {% if exercicios_list %}
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Enunciado</th>
+                                            <th>Submissão</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for exercicio in exercicios_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ exercicio.enunciado }}</td>
+                                        <td></td>
+                                        <td class="center"><a href={% url "programacao:aluno_atividade_exercicio_submissao" exercicio.id %}><button type="button" class="btn btn-sm btn-primary">Responder</button></a></td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                    <div class="alert alert-info alert-dismissable">
+                                    Nenhum exercício cadastrado!
+                                    </div>
+                                {% endif %}
+                                
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Submissões anteriores
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% if submissoes_list %}
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Arquivo</th>
+                                    <th>Data de envio</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for sub in submissoes_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ sub.arquivo }}</td>
+                                <td>{{ sub.dataEnvio }}</td>
+                                <td class="center"><a href="/media/{{sub.arquivo}}" target="blank"><button type="button" class="btn btn-sm btn-primary">Download</button></a></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                            <div class="alert alert-info alert-dismissable">
+                            Nenhuma submissão foi efetuada!
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->

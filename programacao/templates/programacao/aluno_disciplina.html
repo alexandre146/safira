@@ -1,0 +1,60 @@
+{% extends "base_aluno.html" %}
+
+{% load bootstrap %}
+
+{% block page_title %} Disciplina {% endblock %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Disciplina: {{ disciplina.titulo }}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="table-responsive">
+                            {% if atividades_list %}
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Título</th>
+                                        <th>Deadline</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                
+                                    {% for atividade in atividades_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ atividade.titulo }}</td>
+                                        <td>{{ atividade.deadline }}</td>
+                                        <td class="center"><a href={% url "programacao:aluno_atividade" atividade.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="visualizar">Visualizar</button></a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                                Não existem atividades para essa disciplina
+                            {% endif %}
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}

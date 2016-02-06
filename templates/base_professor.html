@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+    <!-- Navigation -->
+    {% block navbar_header %}
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href={% url "programacao:professor_index" %}><b>Safira:</b> {{ user.get_username }} (Professor)</a>
+    {% endblock %}
+
+    {% block navbar_right %}
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-tasks">
+                {% block top_atividades %}
+                {% endblock %}
+            </ul>
+            <!-- /.dropdown-tasks -->
+        </li>
+        <!-- /.dropdown -->
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-support fa-fw"></i>  <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-messages">
+                {% block top_intervencoes %}
+                {% endblock %}
+            </ul>
+            <!-- /.dropdown-messages -->
+        </li>
+        <!-- /.dropdown -->
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-alerts">
+                {% block top_notificacoes %}
+                {% endblock %}
+            </ul>
+            <!-- /.dropdown-alerts -->
+        </li>
+        <!-- /.dropdown -->
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-user">
+                <li><a href={% url "programacao:professor_edit" %}><i class="fa fa-user fa-fw"></i> Perfil</a>
+                </li>
+                <li><a href={% url "programacao:professor_edit" %}><i class="fa fa-gear fa-fw"></i> Configurações</a>
+                </li>
+                <li class="divider"></li>
+                <li><a href={% url "programacao:sair" %}><i class="fa fa-sign-out fa-fw"></i> Sair</a>
+                </li>
+            </ul>
+            <!-- /.dropdown-user -->
+        </li>
+        <!-- /.dropdown -->
+    {% endblock %}
+    
+    {% block sidebar %}
+        <div class="sidebar-nav navbar-collapse">
+            <ul class="nav" id="side-menu">
+                <li>
+                    <a href=""><i class="fa fa-edit fa-fw"></i> Professor<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href={% url "programacao:professor_minhas_disciplinas" %}><i class="fa fa-edit fa-fw"></i> Disciplinas</a>
+                        </li>
+                        <li>
+                            <a href={% url "programacao:professor_disciplina_alunos" %}><i class="fa fa-group fa-fw"></i> Alunos inscritos em curso</a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href=""><i class="fa fa-edit fa-fw"></i> Autor de currículo (Mathema)<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href={% url "programacao:professor_disciplina_objetivo" %}><i class="fa fa-graduation-cap fa-fw"></i> Objetivos de aprendizagem </a>
+                        </li>
+                        <li>
+                            <a href={% url "programacao:professor_disciplina_topico" %}><i class="fa fa-list-alt fa-fw"></i> Tópicos </a>
+                        </li>
+                        <li>
+                            <a href={% url "programacao:professor_disciplina_atividade" %}><i class="fa fa-tasks fa-fw"></i> Atividades </a>
+                        </li>
+                        <li>
+                            <a href={% url "programacao:professor_disciplina_topico_atividade" %}><i class="fa fa-exchange fa-fw"></i> Tópicos e suas atividades</a>
+                        </li>
+                        <li>
+                            <a href={% url "programacao:professor_disciplina_suporte" %}><i class="fa fa-film fa-fw"></i> Estrutras de suporte </a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <!-- <li>
+                    <a href={% url "programacao:professor_minhas_intervencoes" %}><i class="fa fa-support fa-fw"></i> Intervenções</a>
+                </li> -->
+            </ul>
+        </div>
+        <!-- /.sidebar-collapse -->
+    {% endblock %}
+
+    {% block center %}
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">{% block page_title %}{% endblock %}</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+        {% block main %}
+        {% endblock %}
+
+    {% endblock %}

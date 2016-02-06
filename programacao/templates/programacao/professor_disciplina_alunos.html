@@ -1,0 +1,102 @@
+{% extends "base_professor.html" %}
+
+{% load bootstrap %}
+
+{% block page_title %} Alunos inscritos {% endblock %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Alunos inscritos em disciplina
+            </div>
+            
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <form action={% url 'programacao:professor_disciplina_alunos' %} method="post">
+                            {% csrf_token %}
+                                <label>Disciplinas</label>
+                                <select class="form-control" name="disciplina">
+                                    <option selected="true" disabled="true">Selecione uma disciplina</option>
+                                    {% for d in disciplina_list %}
+                                        <option value={{ d.id }}>{{ d.titulo }}</option>
+                                    {% endfor %}
+                                </select><br>
+                                <button type="submit" class="btn btn-sm btn-success">Selecionar</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+            <div class="panel-footer">
+            </div> 
+            <!-- /.panel-footer -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% if disciplina %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Lista de alunos da disciplina {{ disciplina.titulo }}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% if alunos_list %}
+                            <div class="dataTable_wrapper">
+                                <table class="table table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-md-8">Nome</th>
+                                            <th class="col-md-2"></th>
+                                            <th class="col-md-2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for obj in alunos_list %}
+                                        <tr>
+                                            <td>{{ obj.nome }}</td>
+                                            <td>{{ obj.nome }}</td>
+                                            <td>{{ obj.nome }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                        {% else %}
+                            <div class="alert alert-info">
+                                Nenhum aluno inscrito na disciplina!
+                            </div>
+                                   
+                        {% endif %}
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "base_professor_index.html" %}
+
+{% load bootstrap %}
+
+{% block top_intervencoes %}
+<li>
+    <a href="#">
+        <div>
+            <strong>John Smith</strong>
+            <span class="pull-right text-muted">
+                <em>Yesterday</em>
+            </span>
+        </div>
+        <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+    </a>
+</li>
+{% endblock %}
+
+{% block top_atividades %}
+<li>
+    <a href="#">
+        <div>
+            <p>
+                <strong>Task 1</strong>
+                <span class="pull-right text-muted">40% Complete</span>
+            </p>
+            <div class="progress progress-striped active">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                    <span class="sr-only">40% Complete (success)</span>
+                </div>
+            </div>
+        </div>
+    </a>
+</li>
+<li class="divider"></li>
+<li>
+    <a class="text-center" href={% url "programacao:professor_minhas_atividades" %}>
+        <strong>Todas as atividades</strong>
+        <i class="fa fa-angle-right"></i>
+    </a>
+</li>
+{% endblock %}
+
+{% block top_notificacoes %}
+<li>
+    <a href="#">
+        <div>
+            <i class="fa fa-support fa-fw"></i> Nova intervenção
+            <span class="pull-right text-muted small">4 minutes ago</span>
+        </div>
+    </a>
+</li>
+<li class="divider"></li>
+<li>
+    <a href="#">
+        <div>
+            <i class="fa fa-user fa-fw"></i> Novo aluno
+            <span class="pull-right text-muted small">4 minutes ago</span>
+        </div>
+    </a>
+</li>
+<li class="divider"></li>
+<li>
+    <a class="text-center" href="#">
+        <strong>Todas as notificações</strong>
+        <i class="fa fa-angle-right"></i>
+    </a>
+</li>
+{% endblock %}
+
+<!-- TODO aluno_edit obj.id -->
+{% block top_url_perfil %}
+    {% url "programacao:professor_edit" 1%}
+{% endblock %}
+
+<!-- TODO aluno_edit ou _conf obj.id -->
+{% block top_url_configuracoes %}
+    {% url "programacao:professor_edit" 1%} 
+{% endblock %}
+
+<!-- Dashboard -->
+{% block qtd_avaliacoes %}5{% endblock %}
+{% block url_avaliacoes %}
+    {% url "programacao:professor_quadro_notas" %}
+{% endblock %}
+
+{% block qtd_atividades %}
+    {% if atividades_list %}
+        {{ atividades_list|length }}
+    {% else %}
+        0 
+    {% endif %}
+{% endblock %}
+{% block url_atividades %}
+    {% url "programacao:professor_minhas_atividades" %}
+{% endblock %}
+
+{% block qtd_comentarios %}26{% endblock %}
+{% block url_comentarios %}
+    {% url "programacao:professor_comentarios" %}
+{% endblock %}
+
+{% block qtd_intervencao %}8{% endblock %}
+{% block url_intervencao %}
+    {% url "programacao:professor_minhas_intervencoes" %}
+{% endblock %}
+
+{% block quadro_atividade %}
+{% if atividades_list %}
+    {% for atividade in atividades_list %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ atividade.titulo }}</td>
+        <td>{{ atividade.deadline }}</td>
+    </tr>
+    {% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block quadro_notificacoes %}
+<a href="#" class="list-group-item">
+    <i class="fa fa-support fa-fw"></i> Nova intervenção
+    <span class="pull-right text-muted small"><em>4 minutes ago</em>
+    </span>
+</a>
+<a href="#" class="list-group-item">
+    <i class="fa fa-user fa-fw"></i> Novo aluno
+    <span class="pull-right text-muted small"><em>43 minutes ago</em>
+    </span>
+</a>
+{% endblock %}
+
+{% block url_notificacoes %}
+{% endblock %}
