@@ -74,8 +74,8 @@
                         {% else %}
                             <div class="alert alert-info">
                                 Nenhum curriculum selecionado! <br>
-                                <a href={% url "programacao:professor_disciplina_curriculum" disciplina.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="editar">Selecionar curriculum</button></a>
-                            </div> 
+                            </div>
+                            <a href={% url "programacao:professor_disciplina_curriculum" disciplina.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="editar">Selecionar curriculum para importar</button></a> 
                         {% endif %}
                     </div>
                     <!-- /.col-lg-12 (nested) -->

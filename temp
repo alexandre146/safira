@@ -1,3 +1,5 @@
+        <a href={% url 'programacao:professor_disciplina_atividade_exercicio' disciplina_id atividade.id %}><input type="button" class="btn btn-sm btn-primary" value='Adicionar exercício prático'></a>
+        
         with open(settings.MEDIA_ROOT + '/submissao/teste1.py', 'r+') as f:
             arqtest = File(f)
             conteudo = arqtest.readlines()

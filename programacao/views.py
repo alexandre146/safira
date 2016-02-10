@@ -259,15 +259,11 @@ def professor_index(request, template_name='programacao/professor_index.html'):
 
     curriculum = []
     for d in disciplinas:
-        curriculum.extend(list(Curriculum.objects.get(id=d.curriculum.id)))
+        curriculum.extend(list(Curriculum.objects.filter(id=d.curriculum_id)))
     
     objetivos = []
     for c in curriculum :
         objetivos.extend(list(ObjetivoProgramacao.objects.filter(curriculum_id=c.id)))
-
-    objetivos = []
-    for d in disciplinas :
-        objetivos.extend(list(ObjetivoProgramacao.objects.filter(disciplina_id=d.id)))
 
     topicos = []
     for obj in objetivos :
@@ -380,6 +376,7 @@ def professor_comentarios(request, template_name='programacao/professor_minhas_d
 def professor_disciplina_edit(request, pk, template_name='programacao/professor_disciplina_edit.html'):
     disciplina = get_object_or_404(Disciplina, pk=pk)
     form = DisciplinaEditForm(request.POST or None, instance=disciplina)
+    
     if request.method=='POST':
         if form.is_valid():
             form.save()
@@ -387,7 +384,7 @@ def professor_disciplina_edit(request, pk, template_name='programacao/professor_
         else :
             form = DisciplinaEditForm()
 
-    curriculum = Curriculum.objects.get(id=disciplina.curriculum.id)
+    curriculum = Curriculum.objects.get(id=disciplina.curriculum_id)
 
     objetivos = ObjetivoProgramacao.objects.filter(curriculum_id=curriculum.id).order_by('ordem')
     topicos = []
@@ -409,6 +406,7 @@ def professor_disciplina_edit(request, pk, template_name='programacao/professor_
     data = {}
     data['form'] = form
     data['disciplina'] = disciplina
+    data['curriculum'] = curriculum
     data['objetivos_list'] = objetivos
     data['topicos_list'] = topicos
     data['atividades_list'] = atividades
@@ -505,12 +503,11 @@ def professor_disciplina_associar_curriculum(request, pk1, pk2, template_name='p
     disciplina = get_object_or_404(Disciplina, pk=pk1)
     curriculum = get_object_or_404(Curriculum, pk=pk2)
     
+    disciplina.curriculum_id = curriculum.id
     disciplina.curriculum = curriculum
     disciplina.save()
+
     return redirect('programacao:professor_disciplina_edit', pk=pk1)
-#     data = {}
-#     data['disciplina'] = disciplina
-#     return render(request, template_name, data)
 
 
 def professor_disciplina_curriculum_edit(request, pk1, pk2, template_name='programacao/professor_disciplina_curriculum_edit.html'):

@@ -26,6 +26,7 @@
                             <form method="post">
                             {% csrf_token %}
                                 {{ form|bootstrap }}
+                                {% if atividade %}
                                 <label>Exercícios associados</label><br>
                                 {% if exercicios_list %}
                                 <table class="table table-bordered table-hover table-striped">
@@ -56,7 +57,8 @@
                                     Nenhum exercício cadastrado!
                                     </div>
                                 {% endif %}
-                                <a href={% url 'programacao:professor_disciplina_atividade_exercicio' disciplina_id atividade.id %}><input type="button" class="btn btn-sm btn-primary" value='Adicionar exercício prático'></a>
+                                <a href={% url "programacao:professor_disciplina_atividade_exercicio" disciplina_id atividade.id %}<input type="button" class="btn btn-sm btn-primary" value='Adicionar exercício prático'></a>
+                                {% endif %}
                                 <br><br>
                                 <button type="submit" class="btn btn-sm btn-success">Salvar</button>
                                 {% if disciplina_id %}
