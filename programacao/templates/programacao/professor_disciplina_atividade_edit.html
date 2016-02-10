@@ -34,8 +34,6 @@
                                             <th>#</th>
                                             <th>Enunciado</th>
                                             <th></th>
-                                            <th></th>
-                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -43,9 +41,12 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ exercicio.enunciado }}</td>
-                                        <td class="center"><a href={% url "programacao:professor_disciplina_atividade_exercicio_testes" disciplina_id exercicio.id %}><button type="button" class="btn btn-sm btn-primary">Executar testes</button></a></td>
-                                        <td class="center"><a href={% url "programacao:professor_disciplina_atividade_exercicio_edit" disciplina_id exercicio.id %}><button type="button" class="btn btn-sm btn-warning">Editar</button></a></td>
-                                        <td class="center"><a href={% url "programacao:professor_disciplina_atividade_exercicio_delete" disciplina_id exercicio.id %}><button type="button" class="btn btn-sm btn-danger">Excluir</button></a></td>
+                                        <td class="center">
+                                            <a href={% url "programacao:professor_disciplina_atividade_exercicio_testes" disciplina_id exercicio.id %}><button type="button" class="btn btn-sm btn-primary">Executar testes</button></a>
+                                            <a href={% url "programacao:professor_disciplina_atividade_exercicio_view" disciplina_id exercicio.id %}><button type="button" class="btn btn-sm btn-success">Visualizar resultados</button></a>
+                                            <a href={% url "programacao:professor_disciplina_atividade_exercicio_edit" disciplina_id exercicio.id %}><button type="button" class="btn btn-sm btn-warning">Editar</button></a>
+                                            <a href={% url "programacao:professor_disciplina_atividade_exercicio_delete" disciplina_id exercicio.id %}><button type="button" class="btn btn-sm btn-danger">Excluir</button></a>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                     </tbody>

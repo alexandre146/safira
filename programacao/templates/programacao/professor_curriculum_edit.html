@@ -1,0 +1,48 @@
+{% extends "base_professor.html" %}
+
+{% load bootstrap %}
+
+{% block page_title %} Curriculum {% endblock %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Editar curriculum
+            </div>
+            
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <form method="post">
+                            {% csrf_token %}
+                                {{ form|bootstrap }}
+                                <button type="submit" class="btn btn-sm btn-success">Salvar</button>
+                                {% if disciplina_id %}
+                                <a href={% url "programacao:professor_disciplina_edit" disciplina_id %}><button type="button" class="btn btn-sm btn-primary">Cancelar</button></a>
+                                {% else %}
+                                <input type='reset' class="btn btn-sm btn-primary" value='Limpar' name='reset'>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+            <div class="panel-footer">
+            </div> 
+            <!-- /.panel-footer -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}

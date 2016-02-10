@@ -29,19 +29,31 @@ urlpatterns = patterns('',
     url(r'^professor/disciplina/edit/(?P<pk>\d+)/$', views.professor_disciplina_edit, name='professor_disciplina_edit'),
     url(r'^professor/disciplina/delete/(?P<pk>\d+)/$', views.professor_disciplina_delete, name='professor_disciplina_delete'),
     url(r'^professor/disciplina/alunos$', views.professor_disciplina_alunos, name='professor_disciplina_alunos'),
+
+
+
+    url(r'^professor/curriculum/$', views.professor_curriculum, name='professor_curriculum'),
+    url(r'^professor/curriculum/edit/(?P<pk>\d+)/$', views.professor_curriculum_edit, name='professor_curriculum_edit'),
+    url(r'^professor/disciplina/(?P<pk>\d+)/curriculum/$', views.professor_disciplina_curriculum, name='professor_disciplina_curriculum'),
+    url(r'^professor/disciplina/(?P<pk1>\d+)curriculum/(?P<pk2>\d+)$', views.professor_disciplina_associar_curriculum, name='professor_disciplina_associar_curriculum'),
+    url(r'^professor/disciplina/(?P<pk1>\d+)/curriculum/edit/(?P<pk2>\d+)$', views.professor_disciplina_curriculum_edit, name='professor_disciplina_curriculum_edit'),
+    
     url(r'^professor/disciplina/objetivo/$', views.professor_disciplina_objetivo, name='professor_disciplina_objetivo'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/objetivo/edit/(?P<pk2>\d+)/$', views.professor_disciplina_objetivo_edit, name='professor_disciplina_objetivo_edit'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/objetivo/delete/(?P<pk2>\d+)/$', views.professor_disciplina_objetivo_delete, name='professor_disciplina_objetivo_delete'),
     url(r'^professor/disciplina/topico/$', views.professor_disciplina_topico, name='professor_disciplina_topico'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/topico/edit/(?P<pk2>\d+)/$', views.professor_disciplina_topico_edit, name='professor_disciplina_topico_edit'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/topico/delete/(?P<pk2>\d+)/$', views.professor_disciplina_topico_delete, name='professor_disciplina_topico_delete'),
+    
     url(r'^professor/disciplina/atividade/$', views.professor_disciplina_atividade, name='professor_disciplina_atividade'),
+    
     url(r'^professor/disciplina/(?P<pk1>\d+)/atividade/edit/(?P<pk2>\d+)/$', views.professor_disciplina_atividade_edit, name='professor_disciplina_atividade_edit'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/atividade/delete/(?P<pk2>\d+)/$', views.professor_disciplina_atividade_delete, name='professor_disciplina_atividade_delete'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/atividade/(?P<pk2>\d+)/exercicio/$', views.professor_disciplina_atividade_exercicio, name='professor_disciplina_atividade_exercicio'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/atividade/exercicio/edit/(?P<pk2>\d+)/$', views.professor_disciplina_atividade_exercicio_edit, name='professor_disciplina_atividade_exercicio_edit'),    
     url(r'^professor/disciplina/(?P<pk1>\d+)/atividade/exercicio/delete/(?P<pk2>\d+)/$', views.professor_disciplina_atividade_exercicio_delete, name='professor_disciplina_atividade_exercicio_delete'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/atividade/exercicio/(?P<pk2>\d+)/testes/$', views.professor_disciplina_atividade_exercicio_testes, name='professor_disciplina_atividade_exercicio_testes'),
+    url(r'^professor/disciplina/(?P<pk1>\d+)/atividade/exercicio/(?P<pk2>\d+)/view/$', views.professor_disciplina_atividade_exercicio_view, name='professor_disciplina_atividade_exercicio_view'),
     url(r'^professor/disciplina/suporte/$', views.professor_disciplina_suporte, name='professor_disciplina_suporte'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/suporte/edit/(?P<pk2>\d+)/$', views.professor_disciplina_suporte_edit, name='professor_disciplina_suporte_edit'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/suporte/delete/(?P<pk2>\d+)/$', views.professor_disciplina_suporte_delete, name='professor_disciplina_suporte_delete'),

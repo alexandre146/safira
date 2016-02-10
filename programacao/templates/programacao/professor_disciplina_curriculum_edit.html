@@ -2,7 +2,7 @@
 
 {% load bootstrap %}
 
-{% block page_title %} Disciplina {% endblock %}
+{% block page_title %} Curriculum da disciplina  {% endblock %}
 
 {% block main %}
 
@@ -10,22 +10,23 @@
     <div class="col-lg-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                Dados da disciplina
+                Curriculum da disciplina {{ disciplina.titulo }}
             </div>
             
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group">
-                            <form method="post">
+                            <form action={% url 'programacao:professor_disciplina_curriculum' disciplina.id %} method="post">
                             {% csrf_token %}
-                                {{ form|bootstrap }}
-                                <button type="submit" class="btn btn-sm btn-success">Salvar</button>
-                                {% if disciplina %}
-                                <a href={% url "programacao:professor_minhas_disciplinas" %}><button type="button" class="btn btn-sm btn-primary">Cancelar</button></a>
-                                {% else %}
-                                <input type='reset' class="btn btn-sm btn-primary" value='Limpar' name='reset'>
-                                {% endif %}
+                                <label>Curriculum</label>
+                                <select class="form-control" name="curriculum">
+                                    <option selected="true" disabled="true">Selecione um curriculum</option>
+                                    {% for c in curriculum_list %}
+                                        <option value={{ c.id }}>{{ c.titulo }}</option>
+                                    {% endfor %}
+                                </select><br>
+                                <button type="submit" class="btn btn-sm btn-success">Visualizar</button>
                             </form>
                         </div>
                     </div>
@@ -34,6 +35,9 @@
                 <!-- /.row (nested) -->
             </div>
             <!-- /.panel-body -->
+            <div class="panel-footer">
+            </div> 
+            <!-- /.panel-footer -->
         </div>
         <!-- /.panel -->
         
@@ -42,41 +46,19 @@
 </div>
 <!-- /.row -->
 
+{% if curriculum %}
+
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                Curriculum
+                Curriculum: {{ curriculum.titulo }} 
             </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        {% if curriculum %}
-                            <div class="dataTable_wrapper">
-                                <table class="table table-hover" id="dataTables-example">
-                                    <thead>
-                                        <tr>
-                                            <th class="col-md-2">Título</th>
-                                            <th class="col-md-8"></th>
-                                            <th class="col-md-2"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{{ curriculum.titulo }}</td>
-                                            <td>{{ curriculum.descricao }}</td>
-                                            <td class="center"><a href={% url "programacao:professor_disciplina_curriculum_edit" disciplina.id curriculum.id %}><button type="button" class="btn btn-sm btn-warning" name="acao" value="editar">Editar</button></a></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.table-responsive -->
-                        {% else %}
-                            <div class="alert alert-info">
-                                Nenhum curriculum selecionado! <br>
-                                <a href={% url "programacao:professor_disciplina_curriculum" disciplina.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="editar">Selecionar curriculum</button></a>
-                            </div> 
-                        {% endif %}
+                        <p>{{ curriculum.descricao }}</p><br>
+                        <a href={% url 'programacao:professor_disciplina_associar_curriculum' disciplina.id curriculum.id %}><button type="submit" class="btn btn-sm btn-primary">Importar curriculum</button></a>
                     </div>
                     <!-- /.col-lg-12 (nested) -->
                 </div>
@@ -290,5 +272,7 @@
     <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
+
+{% endif %}
 
 {% endblock %}

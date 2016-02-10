@@ -6,7 +6,7 @@ from django.forms.widgets import DateTimeInput
 
 from programacao.models import Aluno, Professor, Disciplina, AlunoDisciplina,\
     ObjetivoProgramacao, TopicoProgramacao, AtividadeProgramacao,\
-    ExercicioPratico, AlunoSubmissaoExercicioPratico
+    ExercicioPratico, AlunoSubmissaoExercicioPratico, Curriculum
 from mathema.models import TopicoAtividade, Suporte
 
 class RegistroForm(ModelForm):
@@ -72,10 +72,16 @@ class DisciplinaEditForm(ModelForm):
         fields = ['titulo']
 
 
+class CurriculumForm(ModelForm):
+    class Meta:
+        model = Curriculum
+        fields = ['titulo', 'descricao']
+
+
 class DisciplinaObjetivoForm(ModelForm):
     class Meta:
         model = ObjetivoProgramacao
-        fields = ['disciplina', 'titulo', 'descricao', 'ordem']
+        fields = ['curriculum', 'titulo', 'descricao', 'ordem']
 
 
 class DisciplinaTopicoForm(ModelForm):
@@ -108,7 +114,7 @@ class DisciplinaSuporteForm(ModelForm):
 class ExercicioForm(ModelForm):
     class Meta:
         model = ExercicioPratico
-        fields = ['enunciado', 'arquivo']
+        fields = ['enunciado', 'arquivoTeste', 'arquivoSolucao']
 
 
 class AlunoSubmissaoExercicioPraticoForm(ModelForm):

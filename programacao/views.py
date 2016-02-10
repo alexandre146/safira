@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
 import datetime
 import subprocess
-import os
 
 from django.conf import settings
 from django.contrib import messages
@@ -18,9 +18,11 @@ from mathema.models import TopicoAtividade, Suporte
 from programacao.forms import AlunoForm, ProfessorForm, DisciplinaForm, RegistroForm, \
     UserEditForm, DisciplinaEditForm, DisciplinaObjetivoForm, \
     DisciplinaTopicoForm, DisciplinaAtividadeForm, DisciplinaTopicoAtividadeForm, \
-    DisciplinaSuporteForm, ExercicioForm, AlunoSubmissaoExercicioPraticoForm
+    DisciplinaSuporteForm, ExercicioForm, AlunoSubmissaoExercicioPraticoForm,\
+    CurriculumForm
 from programacao.models import Aluno, Professor, Disciplina, AlunoDisciplina, ObjetivoProgramacao, TopicoProgramacao, \
-    AtividadeProgramacao, ExercicioPratico, AlunoSubmissaoExercicioPratico
+    AtividadeProgramacao, ExercicioPratico, AlunoSubmissaoExercicioPratico,\
+    Curriculum
 
 def index(request, template_name='programacao/index.html'):
     if request.method=='POST':
@@ -82,9 +84,15 @@ def sair(request):
 def aluno_index(request, template_name='programacao/aluno_index.html'):
     aluno = Aluno.objects.get(user_id=request.user.id)
     aluno_disciplina = AlunoDisciplina.objects.filter(aluno_id=aluno.id)
-    objetivos = []
+    
+    curriculum = []
     for ad in aluno_disciplina :
-        objetivos.extend(list(ObjetivoProgramacao.objects.filter(disciplina_id=ad.disciplina_id)))
+        disc = Disciplina.objects.get(id=ad.disciplina_id)
+        curriculum.extend(list(Curriculum.objects.get(id=disc.curriculum.id)))
+    
+    objetivos = []
+    for c in curriculum :
+        objetivos.extend(list(ObjetivoProgramacao.objects.filter(curriculum_id=c.id)))
 
     topicos = []
     for obj in objetivos :
@@ -161,7 +169,7 @@ def aluno_disciplina_inscrever(request, pk, template_name='programacao/aluno_dis
 
 
 def aluno_disciplina_desinscrever(request, pk, template_name='programacao/aluno_minhas_disciplinas.html'):
-    aluno = Aluno.objects.get(user_id=request.user.id)
+#     aluno = Aluno.objects.get(user_id=request.user.id)
     disciplina = get_object_or_404(Disciplina, pk=pk)
     
     inscricao = AlunoDisciplina.objects.get(disciplina=disciplina)
@@ -173,7 +181,7 @@ def aluno_disciplina_desinscrever(request, pk, template_name='programacao/aluno_
 def aluno_disciplina(request, pk, template_name='programacao/aluno_disciplina.html'):
     disciplina = get_object_or_404(Disciplina, pk=pk)
 
-    objetivos = ObjetivoProgramacao.objects.filter(disciplina_id=disciplina.id)
+    objetivos = ObjetivoProgramacao.objects.filter(curriculum_id=disciplina.curriculum.id)
 
     topicos = []
     for obj in objetivos :
@@ -248,6 +256,14 @@ def aluno_atividade_exercicio_submissao(request, pk, template_name='programacao/
 def professor_index(request, template_name='programacao/professor_index.html'):
     professor = Professor.objects.get(user_id=request.user.id)
     disciplinas = Disciplina.objects.filter(professor_id=professor.id)
+
+    curriculum = []
+    for d in disciplinas:
+        curriculum.extend(list(Curriculum.objects.get(id=d.curriculum.id)))
+    
+    objetivos = []
+    for c in curriculum :
+        objetivos.extend(list(ObjetivoProgramacao.objects.filter(curriculum_id=c.id)))
 
     objetivos = []
     for d in disciplinas :
@@ -341,87 +357,6 @@ def professor_atividade(request, pk, template_name='programacao/professor_ativid
     return render(request, template_name, data)
 
 
-def professor_disciplina_atividade_exercicio(request, pk1, pk2, template_name='programacao/professor_disciplina_atividade_exercicio_edit.html'):
-    atividade = get_object_or_404(AtividadeProgramacao, pk=pk2)
-    form = ExercicioForm(request.POST or None, request.FILES or None)
-    if request.method=='POST':
-        if form.is_valid():
-            exercicio = form.save(commit=False)
-            exercicio.atividade = atividade
-            exercicio.save()
-            return redirect('programacao:professor_disciplina_atividade_edit', pk1=pk1, pk2=pk2)
-    
-    data = {}
-    data['form'] = form
-    data['atividade'] = atividade
-    data['disciplina_id'] = pk1
-    return render(request, template_name, data)
-
-
-def professor_disciplina_atividade_exercicio_edit(request, pk1, pk2, template_name='programacao/professor_disciplina_atividade_exercicio_edit.html'):
-    exercicio = get_object_or_404(ExercicioPratico, pk=pk2)
-    atividade = AtividadeProgramacao.objects.get(id=exercicio.atividade_id)
-    form = ExercicioForm(request.POST or None, request.FILES or None, instance=exercicio)
-
-    if request.method=='POST':
-        if form.is_valid():
-            form.save()
-            return redirect('programacao:professor_disciplina_atividade_edit', pk1=pk1, pk2=pk2)
-   
-    data = {}
-    data['form'] = form
-    data['exercicio'] = exercicio
-    data['atividade'] = atividade
-    data['disciplina_id'] = pk1
-    return render(request, template_name, data)
-
-
-def professor_disciplina_atividade_exercicio_delete(request, pk, template_name='programacao/professor_disciplina_atividade_exercicio_confirm_delete.html'):
-    exercicio = get_object_or_404(ExercicioPratico, pk=pk)
-    atividade = AtividadeProgramacao.objects.get(id=exercicio.atividade_id)
-    if request.method=='POST':
-        exercicio.delete()
-        return redirect('programacao:professor_disciplina_atividade_edit', pk1=exercicio.id, pk2=atividade.id)
-    
-    data = {}
-    data['exercicio'] = exercicio
-    data['atividade'] = atividade
-    return render(request, template_name, data)
-
-def professor_disciplina_atividade_exercicio_testes(request, pk1, pk2, template_name='programacao/professor_disciplina_atividade_exercicio_testes.html'):
-    exercicio = get_object_or_404(ExercicioPratico, pk=pk2)
-    atividade = AtividadeProgramacao.objects.get(id=exercicio.atividade_id)
-
-    submissoes = AlunoSubmissaoExercicioPratico.objects.filter(exercicio_id=exercicio.id)
-    
-    professor = Professor.objects.get(user_id=request.user.id)
-    testFile = str(exercicio.arquivo)
-    for submissao in submissoes:
-        submissaoFile = str(submissao.arquivo)
-       
-        p = subprocess.Popen('python ' + settings.MEDIA_ROOT + '/' + testFile + ' ' + settings.MEDIA_ROOT + ' ' + submissaoFile + ' ' + professor.user.username, shell=True)
-        p.wait()
-
-        with open(settings.MEDIA_ROOT + '/teste/' + professor.user.username + '/result.txt', 'r') as f:
-            resultFile = File(f)
-            errors = int(resultFile.readline().rstrip())
-            failures = int(resultFile.readline().rstrip())
-            tests = int(resultFile.readline().rstrip())
-            resultFile.close()
-
-        result = ((float(tests) - (float(errors) + float(failures))) / tests) * 100
-        submissao.avaliacao = result
-        submissao.save()
-
-    data = {}
-    data['disciplina_id'] = pk1
-    data['exercicio'] = exercicio
-    data['atividade'] = atividade
-    data['submissoes_list'] = submissoes
-   
-    return render(request, template_name, data)
-
-
 # @login_required()
 def professor_minhas_intervencoes(request, template_name='programacao/professor_minhas_disciplinas.html'):
     data = {}
@@ -452,7 +387,9 @@ def professor_disciplina_edit(request, pk, template_name='programacao/professor_
         else :
             form = DisciplinaEditForm()
 
-    objetivos = ObjetivoProgramacao.objects.filter(disciplina_id=disciplina.id).order_by('ordem')
+    curriculum = Curriculum.objects.get(id=disciplina.curriculum.id)
+
+    objetivos = ObjetivoProgramacao.objects.filter(curriculum_id=curriculum.id).order_by('ordem')
     topicos = []
     atividades = []
     suportes = []
@@ -491,11 +428,102 @@ def professor_disciplina_delete(request, pk, template_name='programacao/professo
     return render(request, template_name, data)
 
 
+def professor_curriculum(request, template_name='programacao/professor_curriculum_edit.html'):
+    form = CurriculumForm(request.POST or None)
+    if request.method=='POST':
+        if form.is_valid():
+#             professor = Professor.objects.get(user_id=request.user.id) AUTOR
+            form.save()
+            return redirect('programacao:professor_curriculum')
+        else : 
+            form = CurriculumForm()
+
+    data = {}
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_curriculum_edit(request, pk, template_name='programacao/professor_curriculum_edit.html'):
+    curriculum = get_object_or_404(Curriculum, pk=pk)
+    
+    form = CurriculumForm(request.POST or None, instance=curriculum)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curriculum_edit', pk=pk)
+        else : 
+            form = CurriculumForm()
+
+    data = {}
+    data['curriculum'] = curriculum
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_disciplina_curriculum(request, pk, template_name='programacao/professor_disciplina_curriculum_edit.html'):   
+    disciplina = get_object_or_404(Disciplina, pk=pk)
+    curriculum_list = Curriculum.objects.all()
+
+    if request.method=='POST':
+        id_curriculum = request.POST.get('curriculum')
+        curriculum = Curriculum.objects.get(id=id_curriculum)
+
+        objetivos_list = ObjetivoProgramacao.objects.filter(curriculum_id=curriculum.id).order_by('ordem')
+        topicos_list = []
+        atividades_list = []
+        suportes_list = []
+        
+        for obj in objetivos_list :
+            topicos_list.extend(list(TopicoProgramacao.objects.filter(objetivo_id=obj.id)))
+    
+        for obj in topicos_list :
+            suportes_list.extend(list(obj.suportes.all()))
+            tas = TopicoAtividade.objects.filter(topico_id=obj.id)
+            for ta in tas :
+                atividades_list.extend(list(AtividadeProgramacao.objects.filter(id=ta.atividade.id)))
+        
+        for obj in atividades_list :
+            suportes_list.extend(list(obj.suportes.all()))
+
+        data = {}
+        data['disciplina'] = disciplina
+        data['curriculum_list'] = curriculum_list
+        data['curriculum'] = curriculum
+        data['objetivos_list'] = objetivos_list
+        data['topicos_list'] = topicos_list
+        data['atividades_list'] = atividades_list
+        data['suportes_list'] = suportes_list
+        return render(request, template_name, data)
+
+    data = {}
+    data['disciplina'] = disciplina
+    data['curriculum_list'] = curriculum_list
+    return render(request, template_name, data)
+
+
+def professor_disciplina_associar_curriculum(request, pk1, pk2, template_name='programacao/professor_disciplina_curriculum_edit.html'):
+    disciplina = get_object_or_404(Disciplina, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)
+    
+    disciplina.curriculum = curriculum
+    disciplina.save()
+    return redirect('programacao:professor_disciplina_edit', pk=pk1)
+#     data = {}
+#     data['disciplina'] = disciplina
+#     return render(request, template_name, data)
+
+
+def professor_disciplina_curriculum_edit(request, pk1, pk2, template_name='programacao/professor_disciplina_curriculum_edit.html'):
+    disciplina = get_object_or_404(Disciplina, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)
+    pass
+
+
 def professor_disciplina_objetivo(request, template_name='programacao/professor_disciplina_objetivo_edit.html'):   
     if request.method=='POST':
         form = DisciplinaObjetivoForm(request.POST or None)
         professor = Professor.objects.get(user_id=request.user.id)
-        form.fields["disciplina"].queryset = Disciplina.objects.filter(professor_id=professor.id)
+#         form.fields["disciplina"].queryset = Disciplina.objects.filter(professor_id=professor.id)
         if form.is_valid():
             form.save()
             return redirect('programacao:professor_disciplina_objetivo')
@@ -504,11 +532,12 @@ def professor_disciplina_objetivo(request, template_name='programacao/professor_
 
     form = DisciplinaObjetivoForm(request.POST or None)
     professor = Professor.objects.get(user_id=request.user.id)
-    form.fields["disciplina"].queryset = Disciplina.objects.filter(professor_id=professor.id)
+#     form.fields["disciplina"].queryset = Disciplina.objects.filter(professor_id=professor.id)
 
     data = {}
     data['form'] = form
     return render(request, template_name, data)
+
 
 def professor_disciplina_objetivo_edit(request, pk1, pk2, template_name='programacao/professor_disciplina_objetivo_edit.html'):
     objetivo = get_object_or_404(ObjetivoProgramacao, pk=pk2)
@@ -700,3 +729,97 @@ def professor_disciplina_suporte_delete(request, pk1, pk2, template_name='progra
     data['disciplina_id'] = pk1
     return render(request, template_name, data)
 
+def professor_disciplina_atividade_exercicio(request, pk1, pk2, template_name='programacao/professor_disciplina_atividade_exercicio_edit.html'):
+    atividade = get_object_or_404(AtividadeProgramacao, pk=pk2)
+    form = ExercicioForm(request.POST or None, request.FILES or None)
+    if request.method=='POST':
+        if form.is_valid():
+            exercicio = form.save(commit=False)
+            exercicio.atividade = atividade
+            exercicio.save()
+            return redirect('programacao:professor_disciplina_atividade_edit', pk1=pk1, pk2=pk2)
+    
+    data = {}
+    data['form'] = form
+    data['atividade'] = atividade
+    data['disciplina_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_disciplina_atividade_exercicio_edit(request, pk1, pk2, template_name='programacao/professor_disciplina_atividade_exercicio_edit.html'):
+    exercicio = get_object_or_404(ExercicioPratico, pk=pk2)
+    atividade = AtividadeProgramacao.objects.get(id=exercicio.atividade_id)
+    form = ExercicioForm(request.POST or None, request.FILES or None, instance=exercicio)
+
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_disciplina_atividade_edit', pk1=pk1, pk2=pk2)
+   
+    data = {}
+    data['form'] = form
+    data['exercicio'] = exercicio
+    data['atividade'] = atividade
+    data['disciplina_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_disciplina_atividade_exercicio_delete(request, pk, template_name='programacao/professor_disciplina_atividade_exercicio_confirm_delete.html'):
+    exercicio = get_object_or_404(ExercicioPratico, pk=pk)
+    atividade = AtividadeProgramacao.objects.get(id=exercicio.atividade_id)
+    if request.method=='POST':
+        exercicio.delete()
+        return redirect('programacao:professor_disciplina_atividade_edit', pk1=exercicio.id, pk2=atividade.id)
+    
+    data = {}
+    data['exercicio'] = exercicio
+    data['atividade'] = atividade
+    return render(request, template_name, data)
+
+def professor_disciplina_atividade_exercicio_testes(request, pk1, pk2, template_name='programacao/professor_disciplina_atividade_exercicio_testes.html'):
+    exercicio = get_object_or_404(ExercicioPratico, pk=pk2)
+    atividade = AtividadeProgramacao.objects.get(id=exercicio.atividade_id)
+
+    submissoes = AlunoSubmissaoExercicioPratico.objects.filter(exercicio_id=exercicio.id)
+    
+    professor = Professor.objects.get(user_id=request.user.id)
+    testFile = str(exercicio.arquivoTeste)
+    for submissao in submissoes:
+        submissaoFile = str(submissao.arquivo)
+       
+        p = subprocess.Popen('python ' + settings.MEDIA_ROOT + '/' + testFile + ' ' + settings.MEDIA_ROOT + ' ' + submissaoFile + ' ' + professor.user.username, shell=True)
+        p.wait()
+
+        with open(settings.MEDIA_ROOT + '/teste/' + professor.user.username + '/result.txt', 'r') as f:
+            resultFile = File(f)
+            errors = int(resultFile.readline().rstrip())
+            failures = int(resultFile.readline().rstrip())
+            tests = int(resultFile.readline().rstrip())
+            resultFile.close()
+
+        result = ((float(tests) - (float(errors) + float(failures))) / tests) * 100
+        submissao.avaliacao = result
+        submissao.save()
+
+    data = {}
+    data['disciplina_id'] = pk1
+    data['exercicio'] = exercicio
+    data['atividade'] = atividade
+    data['submissoes_list'] = submissoes
+   
+    return render(request, template_name, data)
+
+
+def professor_disciplina_atividade_exercicio_view(request, pk1, pk2, template_name='programacao/professor_disciplina_atividade_exercicio_testes.html'):
+    exercicio = get_object_or_404(ExercicioPratico, pk=pk2)
+    atividade = AtividadeProgramacao.objects.get(id=exercicio.atividade_id)
+
+    submissoes = AlunoSubmissaoExercicioPratico.objects.filter(exercicio_id=exercicio.id)
+
+    data = {}
+    data['disciplina_id'] = pk1
+    data['exercicio'] = exercicio
+    data['atividade'] = atividade
+    data['submissoes_list'] = submissoes
+   
+    return render(request, template_name, data)

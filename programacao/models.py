@@ -27,7 +27,7 @@ class Professor(models.Model):
 #                 pass
     
     class Meta:
-        permissions=(('view_professor', 'view_professor'),)
+        permissions=(('view_professor', 'view_professor'),('view_autor', 'view_autor'))
 
 
 class Aluno(models.Model):
@@ -53,10 +53,23 @@ class Aluno(models.Model):
         permissions=(('view_aluno', 'view_aluno'),)
 
 
+class Curriculum(models.Model):
+    titulo = models.CharField(max_length=200)
+    descricao = models.CharField(max_length=500)
+    dataCriacao = models.DateField(null=True, blank=True)
+    
+    def __unicode__(self):
+        return (self.titulo)
+    
+    def get_absolute_url(self):
+        return reverse(viewname='programacao:professor_curriculum_edit', kwargs={'pk': self.pk})
+    
+
 class Disciplina(models.Model):
     titulo = models.CharField(max_length=200)
     professor = models.ForeignKey(Professor)
     alunos = models.ManyToManyField(Aluno, through='AlunoDisciplina', null=True, blank=True)
+    curriculum = models.ForeignKey(Curriculum, null=True, blank=True)
     
     def __unicode__(self):
         return "%s (%s)" % (self.titulo, self.professor)
@@ -77,7 +90,7 @@ class AlunoDisciplina(models.Model):
 
 
 class ObjetivoProgramacao(Objetivo):
-    disciplina = models.ForeignKey(Disciplina)
+    curriculum = models.ForeignKey(Curriculum)
     
     def __unicode__(self):
         return (self.titulo)
@@ -92,7 +105,7 @@ class TopicoProgramacao(Topico):
         return (self.titulo)
 
     def get_absolute_url(self):
-        return reverse(viewname='programacao:disciplina_topico_edit', kwargs={'pk': self.pk})
+        return reverse(viewname='programacao:professor_disciplina_topico_edit', kwargs={'pk': self.pk})
     
 
 class AtividadeProgramacao(Atividade):
@@ -103,7 +116,7 @@ class AtividadeProgramacao(Atividade):
         return (self.titulo)
 
     def get_absolute_url(self):
-        return reverse(viewname='programacao:disciplina_atividade_edit', kwargs={'pk': self.pk})
+        return reverse(viewname='programacao:professor_disciplina_atividade_edit', kwargs={'pk': self.pk})
     
     
 # file will be uploaded to MEDIA_ROOT/submissao/<username>/<filename>
@@ -114,7 +127,8 @@ def user_teste_directory_path(instance, filename):
 class ExercicioPratico(models.Model):
     atividade = models.ForeignKey(AtividadeProgramacao)
     enunciado = models.CharField(max_length=200)
-    arquivo = models.FileField(upload_to=user_teste_directory_path, null=True, blank=True)
+    arquivoTeste = models.FileField(upload_to=user_teste_directory_path, verbose_name='Arquivo de testes unitarios' , null=True, blank=True)
+    arquivoSolucao = models.FileField(upload_to=user_teste_directory_path, verbose_name='Arquivo da solucao de referncia' , null=True, blank=True)
 
     def __unicode__(self):
         return (self.titulo)
@@ -131,7 +145,7 @@ def user_submissao_directory_path(instance, filename):
 class AlunoSubmissaoExercicioPratico(models.Model):
     exercicio = models.ForeignKey(ExercicioPratico)
     autor = models.ForeignKey(Aluno)
-    arquivo = models.FileField(upload_to=user_submissao_directory_path, null=True, blank=True)
+    arquivo = models.FileField(upload_to=user_submissao_directory_path, verbose_name='Codigo fonte', null=True, blank=True)
     dataEnvio = models.DateTimeField()
     avaliacao = models.FloatField(null=True, blank=True)
 

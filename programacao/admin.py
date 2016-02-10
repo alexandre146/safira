@@ -6,7 +6,7 @@ from django.conf import settings
 
 from programacao.models import Aluno, Professor, Disciplina, AlunoDisciplina, \
     ObjetivoProgramacao, TopicoProgramacao, AtividadeProgramacao,\
-    AlunoSubmissaoExercicioPratico, ExercicioPratico
+    AlunoSubmissaoExercicioPratico, ExercicioPratico, Curriculum
 
 class ProfessorAdmin(admin.ModelAdmin):
 
@@ -23,6 +23,7 @@ admin.site.register(Aluno)
 admin.site.register(Professor, ProfessorAdmin)
 admin.site.register(Disciplina)
 admin.site.register(AlunoDisciplina)
+admin.site.register(Curriculum)
 admin.site.register(ObjetivoProgramacao)
 admin.site.register(TopicoProgramacao)
 admin.site.register(AtividadeProgramacao)
