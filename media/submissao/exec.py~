@@ -1,0 +1,11 @@
+with open('teste1.py', 'r+') as f:
+    temp = f.readlines()
+    f.seek(0)
+    for line in temp:
+        if 'file =' in line.rstrip():
+            f.write("file =" + "ex1.py")
+	else:
+	    f.write(line)
+    f.truncate()
+    f.close()
+

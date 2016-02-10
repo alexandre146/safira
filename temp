@@ -1,3 +1,14 @@
+        with open(settings.MEDIA_ROOT + '/submissao/teste1.py', 'r+') as f:
+            arqtest = File(f)
+            conteudo = arqtest.readlines()
+            arqtest.seek(0)
+            for line in conteudo:
+                if 'file =' in line.rstrip():
+                    arqtest.write("file = '" + os.path.dirname(os.path.dirname(__file__)) + str(submissao.arquivo) + "'\n")
+                else:
+                    arqtest.write(line)
+            arqtest.truncate()
+            arqtest.close()                                
                                 <label>Exercícios associados</label><br>
                                 {% if exercicios_list %}
                                 <table class="table table-bordered table-hover table-striped">

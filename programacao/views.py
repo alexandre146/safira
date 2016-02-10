@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime
 import subprocess
+import os
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -19,7 +21,6 @@ from programacao.forms import AlunoForm, ProfessorForm, DisciplinaForm, Registro
     DisciplinaSuporteForm, ExercicioForm, AlunoSubmissaoExercicioPraticoForm
 from programacao.models import Aluno, Professor, Disciplina, AlunoDisciplina, ObjetivoProgramacao, TopicoProgramacao, \
     AtividadeProgramacao, ExercicioPratico, AlunoSubmissaoExercicioPratico
-
 
 def index(request, template_name='programacao/index.html'):
     if request.method=='POST':
@@ -57,7 +58,8 @@ def registro(request, template_name='programacao/registro.html'):
                 permission = Permission.objects.get(name='view_aluno')
                 user.user_permissions.add(permission)
 
-                messages.add_message(request, messages.INFO, 'Cadastrado realizado com sucesso!')
+                messages.add_message(request, messages.INFO, 'Cadastro realizado com sucesso!')
+                return redirect('programacao:index')
         else:
             messages.add_message(request, messages.ERROR, 'Erro ao tentar cadastrar!') 
 
@@ -339,20 +341,20 @@ def professor_atividade(request, pk, template_name='programacao/professor_ativid
     return render(request, template_name, data)
 
 
-def professor_disciplina_atividade_exercicio(request, pk, template_name='programacao/professor_disciplina_atividade_exercicio_edit.html'):
-    atividade = get_object_or_404(AtividadeProgramacao, pk=pk)
+def professor_disciplina_atividade_exercicio(request, pk1, pk2, template_name='programacao/professor_disciplina_atividade_exercicio_edit.html'):
+    atividade = get_object_or_404(AtividadeProgramacao, pk=pk2)
     form = ExercicioForm(request.POST or None, request.FILES or None)
     if request.method=='POST':
         if form.is_valid():
             exercicio = form.save(commit=False)
             exercicio.atividade = atividade
             exercicio.save()
-            
-            return redirect('programacao:disciplina_atividade_edit', pk)
+            return redirect('programacao:professor_disciplina_atividade_edit', pk1=pk1, pk2=pk2)
     
     data = {}
     data['form'] = form
     data['atividade'] = atividade
+    data['disciplina_id'] = pk1
     return render(request, template_name, data)
 
 
@@ -364,7 +366,7 @@ def professor_disciplina_atividade_exercicio_edit(request, pk1, pk2, template_na
     if request.method=='POST':
         if form.is_valid():
             form.save()
-            return redirect('programacao:disciplina_atividade_edit', pk=atividade.id)
+            return redirect('programacao:professor_disciplina_atividade_edit', pk1=pk1, pk2=pk2)
    
     data = {}
     data['form'] = form
@@ -379,7 +381,7 @@ def professor_disciplina_atividade_exercicio_delete(request, pk, template_name='
     atividade = AtividadeProgramacao.objects.get(id=exercicio.atividade_id)
     if request.method=='POST':
         exercicio.delete()
-        return redirect('programacao:disciplina_atividade_edit', pk=atividade.id)
+        return redirect('programacao:professor_disciplina_atividade_edit', pk1=exercicio.id, pk2=atividade.id)
     
     data = {}
     data['exercicio'] = exercicio
@@ -391,29 +393,21 @@ def professor_disciplina_atividade_exercicio_testes(request, pk1, pk2, template_
     atividade = AtividadeProgramacao.objects.get(id=exercicio.atividade_id)
 
     submissoes = AlunoSubmissaoExercicioPratico.objects.filter(exercicio_id=exercicio.id)
-
-    testFile = exercicio.arquivo
+    
+    professor = Professor.objects.get(user_id=request.user.id)
+    testFile = str(exercicio.arquivo)
     for submissao in submissoes:
-#       p = subprocess.Popen(['python', settings.MEDIA_ROOT + testFile])
-
-        with open(settings.MEDIA_ROOT + '/submissao/teste1.py', 'r+') as f:
-            arqtest = File(f)
-            
-            for line in arqtest.readlines():
-                if 'file =' in line.rstrip():
-                    arqtest.write("file = os.path.dirname(os.path.dirname(__file__))" + str(submissao.arquivo))
-                    print(line)
-        arqtest.close()
-
-        p = subprocess.Popen(['python', settings.MEDIA_ROOT + '/submissao/teste1.py'])
+        submissaoFile = str(submissao.arquivo)
+       
+        p = subprocess.Popen('python ' + settings.MEDIA_ROOT + '/' + testFile + ' ' + settings.MEDIA_ROOT + ' ' + submissaoFile + ' ' + professor.user.username, shell=True)
         p.wait()
 
-        with open(settings.MEDIA_ROOT + '/submissao/result.txt', 'rb') as f:
+        with open(settings.MEDIA_ROOT + '/teste/' + professor.user.username + '/result.txt', 'r') as f:
             resultFile = File(f)
             errors = int(resultFile.readline().rstrip())
             failures = int(resultFile.readline().rstrip())
             tests = int(resultFile.readline().rstrip())
-        resultFile.close()
+            resultFile.close()
 
         result = ((float(tests) - (float(errors) + float(failures))) / tests) * 100
         submissao.avaliacao = result
@@ -504,7 +498,7 @@ def professor_disciplina_objetivo(request, template_name='programacao/professor_
         form.fields["disciplina"].queryset = Disciplina.objects.filter(professor_id=professor.id)
         if form.is_valid():
             form.save()
-            return redirect('programacao:professor_disciplina_objetivo_edit')
+            return redirect('programacao:professor_disciplina_objetivo')
         else : 
             form = DisciplinaObjetivoForm()
 
@@ -550,7 +544,7 @@ def professor_disciplina_topico(request, template_name='programacao/professor_di
         form = DisciplinaTopicoForm(request.POST or None)
         if form.is_valid():
             form.save()
-            return redirect('programacao:professor_disciplina_topico_edit')
+            return redirect('programacao:professor_disciplina_topico')
         else : 
             form = DisciplinaTopicoForm()
 
@@ -590,7 +584,7 @@ def professor_disciplina_topico_delete(request, pk1, pk2, template_name='program
     return render(request, template_name, data)
 
 
-def professor_disciplina_atividade(request, template_name='programacao/professor_disciplina_atividade.html'):
+def professor_disciplina_atividade(request, template_name='programacao/professor_disciplina_atividade_edit.html'):
     if request.method=='POST':
         form = DisciplinaAtividadeForm(request.POST or None)
         if form.is_valid():
@@ -617,7 +611,7 @@ def professor_disciplina_atividade_edit(request, pk1, pk2, template_name='progra
     if request.method=='POST':
         if form.is_valid():
             form.save()
-            return redirect('programacao:professor_disciplina_atividade_edit', pk=pk2)
+            return redirect('programacao:professor_disciplina_atividade_edit', pk1=pk1, pk2=pk2)
         else :
             form = DisciplinaAtividadeForm(request.POST or None)
 

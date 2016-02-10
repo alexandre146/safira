@@ -1,0 +1,41 @@
+import unittest 
+from unittest import TestResult 
+from pexpect import *
+
+class TestExemplo1(unittest.TestCase): 
+
+	def setUp(self):
+		 pass
+
+	def tearDown(self):
+		pass
+
+	def test_soma1(self):
+		child = spawn('python exemplo1.py')
+		child.sendline('30')
+		child.sendline('10')
+		child.sendline('2')
+		child.expect('42')
+		
+
+
+
+if __name__== '__main__':
+	loader = unittest.TestLoader()
+	suite = loader.loadTestsFromTestCase(TestExemplo1)
+	r = TestResult()
+	suite.run(r)
+	result_file = open('result.txt', 'wb')
+	result_file.write(str(len(r.errors)))
+	result_file.write('\n')
+	result_file.write(str(len(r.failures)))
+	result_file.write('\n')
+	result_file.write(str(r.testsRun))
+	result_file.write('\n')
+	result_file.write(str(r.wasSuccessful()))
+	result_file.write('\n')
+	for e in r.errors:
+		result_file.write(e[1])
+	for f in r.failures:
+		result_file.write(f[1])
+	result_file.close()

@@ -1,0 +1,26 @@
+import unittest 
+from unittest import TestResult 
+from pexpect import spawn
+import sys
+
+class TestExemplo1(unittest.TestCase): 
+
+    file = ''
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_soma1(self):
+        child = spawn('python ' + self.file)
+        child.sendline('30')
+        child.sendline('10')
+        child.sendline('2')
+        child.expect('42')
+        
+
+if __name__== '__main__':
+    print(str(sys.argv[0]))
+

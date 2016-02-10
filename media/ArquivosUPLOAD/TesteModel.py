@@ -8,14 +8,23 @@ class TestExemplo1(unittest.TestCase):
     file = ''
 
     def setUp(self):
-	self.file = str(sys.argv[1])
+		###########################################
+		# Nao altere esse trecho (Inicio)
+		###########################################
+        self.file = str(sys.argv[1]) + str(sys.argv[2])
+		###########################################
+		# Nao altere esse trecho (Final)
+		###########################################
+        # insira inicializacoes dos testes apos esse comentario
+
 
     def tearDown(self):
         pass
 
+
+	# metodos de teste devem ser inseridos aqui
     def test_soma1(self):
-	child = spawn('python ' + self.file)
-        #child = spawn('python ex1.py')
+        child = spawn('python ' + self.file)
         child.sendline('30')
         child.sendline('10')
         child.sendline('2')
@@ -23,11 +32,15 @@ class TestExemplo1(unittest.TestCase):
         
 
 if __name__== '__main__':
+	###########################################
+	# Nao altere esse trecho (Inicio)
+	###########################################
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromTestCase(TestExemplo1)
     r = TestResult()
     suite.run(r)
-    result_file = open('result.txt', 'wb')
+
+    result_file = open(str(sys.argv[1]) + '/submissao/result.txt', 'wb')
     result_file.write(str(len(r.errors)))
     result_file.write('\n')
     result_file.write(str(len(r.failures)))
@@ -36,8 +49,7 @@ if __name__== '__main__':
     result_file.write('\n')
     result_file.write(str(r.wasSuccessful()))
     result_file.write('\n')
-    for e in r.errors:
-        result_file.write(e[1])
-    for f in r.failures:
-        result_file.write(f[1])
     result_file.close()
+    ###########################################
+    # Nao altere esse trecho (Final)
+    ###########################################
