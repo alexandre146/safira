@@ -78,6 +78,12 @@ class CurriculumForm(ModelForm):
         fields = ['titulo', 'descricao']
 
 
+class CurriculumObjetivoForm(ModelForm):
+    class Meta:
+        model = ObjetivoProgramacao
+        fields = ['titulo', 'descricao', 'ordem']
+
+
 class DisciplinaObjetivoForm(ModelForm):
     class Meta:
         model = ObjetivoProgramacao

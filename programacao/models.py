@@ -128,7 +128,7 @@ class ExercicioPratico(models.Model):
     atividade = models.ForeignKey(AtividadeProgramacao)
     enunciado = models.CharField(max_length=200)
     arquivoTeste = models.FileField(upload_to=user_teste_directory_path, verbose_name='Arquivo de testes unitarios' , null=True, blank=True)
-    arquivoSolucao = models.FileField(upload_to=user_teste_directory_path, verbose_name='Arquivo da solucao de referncia' , null=True, blank=True)
+    arquivoSolucao = models.FileField(upload_to=user_teste_directory_path, verbose_name='Arquivo da solucao de referencia' , null=True, blank=True)
 
     def __unicode__(self):
         return (self.titulo)

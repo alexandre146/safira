@@ -12,22 +12,23 @@
             <div class="panel-heading">
                 Curriculum da disciplina {{ disciplina.titulo }}
             </div>
+            
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group">
-                            {% if curriculum %}
-                            <form method="post">
-                                {% csrf_token %}
-                                {{ form|bootstrap }}
-                                <button type="submit" class="btn btn-sm btn-success">Salvar</button>
-                                <a href={% url "programacao:professor_disciplina_edit" disciplina.id %}><button type="button" class="btn btn-sm btn-primary">Voltar</button></a>
+                            <form action={% url 'programacao:professor_disciplina_curriculum' disciplina.id %} method="post">
+                            {% csrf_token %}
+                                <label>Curriculum</label>
+                                <select class="form-control" name="curriculum">
+                                    <option selected="true" disabled="true">Selecione um curriculum</option>
+                                    {% for c in curriculum_list %}
+                                        <option value={{ c.id }}>{{ c.titulo }}</option>
+                                    {% endfor %}
+                                </select><br>
+                                <button type="submit" class="btn btn-sm btn-success">Visualizar</button>
                             </form>
-                            {% else %}
-                            Não existe curriculo associado a esta disciplina!
-                            {% endif %}
-                         </div>
-                         <!-- /.form-group (nested) -->
+                        </div>
                     </div>
                     <!-- /.col-lg-12 (nested) -->
                 </div>
@@ -35,7 +36,6 @@
             </div>
             <!-- /.panel-body -->
             <div class="panel-footer">
-            
             </div> 
             <!-- /.panel-footer -->
         </div>
@@ -47,6 +47,31 @@
 <!-- /.row -->
 
 {% if curriculum %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Curriculum: {{ curriculum.titulo }} 
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>{{ curriculum.descricao }}</p><br>
+                        <a href={% url 'programacao:professor_disciplina_associar_curriculum' disciplina.id curriculum.id %}><button type="submit" class="btn btn-sm btn-primary">Importar curriculum</button></a>
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
 
 <div class="row">
     <div class="col-lg-12">
@@ -90,12 +115,9 @@
                 <!-- /.row (nested) -->
             </div>
             <!-- /.panel-body -->
-            <div class="panel-footer">
-                <a href={% url "programacao:professor_disciplina_objetivo_add" disciplina.id curriculum.id %}><button type="button" class="btn btn-sm btn-success">Adicionar</button></a>
-            </div> 
-            <!-- /.panel-footer -->
         </div>
         <!-- /.panel -->
+        
     </div>
     <!-- /.col-lg-12 -->
 </div>
@@ -143,10 +165,6 @@
                 <!-- /.row (nested) -->
             </div>
             <!-- /.panel-body -->
-            <div class="panel-footer">
-                <a href={% url "programacao:professor_disciplina_topico_add" disciplina.id curriculum.id %}><button type="button" class="btn btn-sm btn-success">Adicionar</button></a>
-            </div> 
-            <!-- /.panel-footer -->
         </div>
         <!-- /.panel -->
         
@@ -197,11 +215,6 @@
                 <!-- /.row (nested) -->
             </div>
             <!-- /.panel-body -->
-            <div class="panel-footer">
-                <a href={% url "programacao:professor_disciplina_atividade_add" disciplina.id curriculum.id %}><button type="button" class="btn btn-sm btn-success">Adicionar</button></a>
-                <a href={% url "programacao:professor_disciplina_topico_atividade_add" disciplina.id curriculum.id %}><button type="button" class="btn btn-sm btn-primary">Associar atividade a um tópico</button></a>
-            </div> 
-            <!-- /.panel-footer -->
         </div>
         <!-- /.panel -->
         
@@ -252,10 +265,6 @@
                 <!-- /.row (nested) -->
             </div>
             <!-- /.panel-body -->
-            <div class="panel-footer">
-                <a href={% url "programacao:professor_disciplina_suporte_add" disciplina.id curriculum.id %}><button type="button" class="btn btn-sm btn-success">Adicionar</button></a>
-            </div> 
-            <!-- /.panel-footer -->
         </div>
         <!-- /.panel -->
         
