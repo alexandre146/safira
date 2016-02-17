@@ -57,7 +57,7 @@
                                     <thead>
                                         <tr>
                                             <th class="col-md-2">Título</th>
-                                            <th class="col-md-8"></th>
+                                            <th class="col-md-8">Descrição</th>
                                             <th class="col-md-1"></th>
                                             <th class="col-md-1"></th>
                                         </tr>
@@ -79,6 +79,59 @@
                             </div>
                             <a href={% url "programacao:professor_disciplina_curriculum" disciplina.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="editar">Selecionar curriculum para importar</button></a> 
                         {% endif %}
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Interações da disciplina
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% if interacao_list %}
+                            <div class="dataTable_wrapper">
+                                <table class="table table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-md-2">Ordem</th>
+                                            <th class="col-md-8">Titulo</th>
+                                            <th class="col-md-1"></th>
+                                            <th class="col-md-1"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for interacao in interacao_list %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ interacao.titulo }}</td>
+                                            <td class="center"><a href={% url "programacao:professor_disciplina_interacao_edit" disciplina.id interacao.id %}><button type="button" class="btn btn-sm btn-warning" name="acao" value="editar">Editar</button></a></td>
+                                            <td class="center"><a href={% url "programacao:professor_disciplina_interacao_delete" disciplina.id interacao.id %}><button type="button" class="btn btn-sm btn-danger" name="acao" value="excluir">Excluir</button></a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <!-- /.table-responsive -->
+                            <div class="alert alert-info">
+                                Nenhuma interação cadastrada! <br>
+                            </div>
+                        {% endif %}
+                            <a href={% url "programacao:professor_disciplina_interacao" disciplina.id %}><button type="button" class="btn btn-sm btn-success" name="acao" value="adicionar">Adicionar</button></a> 
                     </div>
                     <!-- /.col-lg-12 (nested) -->
                 </div>

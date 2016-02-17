@@ -19,10 +19,11 @@ from programacao.forms import AlunoForm, ProfessorForm, DisciplinaForm, Registro
     UserEditForm, DisciplinaEditForm, DisciplinaObjetivoForm, \
     DisciplinaTopicoForm, DisciplinaAtividadeForm, DisciplinaTopicoAtividadeForm, \
     DisciplinaSuporteForm, ExercicioForm, AlunoSubmissaoExercicioPraticoForm,\
-    CurriculumForm, CurriculumObjetivoForm
+    CurriculumForm, CurriculumObjetivoForm, InteracaoForm
 from programacao.models import Aluno, Professor, Disciplina, AlunoDisciplina, ObjetivoProgramacao, TopicoProgramacao, \
     AtividadeProgramacao, ExercicioPratico, AlunoSubmissaoExercicioPratico,\
-    Curriculum
+    Curriculum, Interacao
+from django.db.transaction import commit
 
 def index(request, template_name='programacao/index.html'):
     if request.method=='POST':
@@ -384,6 +385,8 @@ def professor_disciplina_edit(request, pk, template_name='programacao/professor_
         else :
             form = DisciplinaEditForm()
 
+    interacao_list = Interacao.objects.filter(disciplina_id=disciplina.id)
+    
     curriculum = Curriculum.objects.get(id=disciplina.curriculum_id)
 
     objetivos = ObjetivoProgramacao.objects.filter(curriculum_id=curriculum.id).order_by('ordem')
@@ -407,6 +410,7 @@ def professor_disciplina_edit(request, pk, template_name='programacao/professor_
     data['form'] = form
     data['disciplina'] = disciplina
     data['curriculum'] = curriculum
+    data['interacao_list'] = interacao_list
     data['objetivos_list'] = objetivos
     data['topicos_list'] = topicos
     data['atividades_list'] = atividades
@@ -676,7 +680,7 @@ def professor_disciplina_topico_edit(request, pk1, pk2, template_name='programac
     if request.method=='POST':
         if form.is_valid():
             form.save()
-            return redirect('programacao:professor_disciplina_topico_edit', pk=pk2)
+            return redirect('programacao:professor_disciplina_topico_edit', pk1=pk1, pk2=pk2)
         else : 
             form = DisciplinaTopicoForm()
 
@@ -793,22 +797,11 @@ def professor_disciplina_topico_atividade(request, template_name='programacao/pr
 
 def professor_disciplina_topico_atividade_add(request, pk1, pk2, template_name='programacao/professor_disciplina_topico_atividade.html'):
     disciplina = get_object_or_404(Disciplina, pk=pk1)
-    curriculum = get_object_or_404(Curriculum, pk=pk2)
-
+    curriculum = get_object_or_404(Curriculum, pk=pk2)    
+    
     if request.method=='POST':
         form = DisciplinaTopicoAtividadeForm(request.POST or None)
-        
-        objetivos_list = ObjetivoProgramacao.objects.filter(curriculum_id=curriculum.id).order_by('ordem')
-        topicos_list = []
-
-        for obj in objetivos_list :
-            topicos_list.extend(list(TopicoProgramacao.objects.filter(objetivo_id=obj.id)))
-
-        atividades_list = AtividadeProgramacao.objects.filter(autor = request.user)
-        
-        form.fields["topico"].queryset = topicos_list
-        form.fields["atividade"].queryset = topicos_list        
-
+#         form.fields["atividade"].queryset = AtividadeProgramacao.objects.filter(autor_id = request.user.id)
         if form.is_valid():
             form.save()
             return redirect('programacao:professor_disciplina_curriculum_edit', pk1=pk1, pk2=pk2)
@@ -984,4 +977,52 @@ def professor_disciplina_atividade_exercicio_view(request, pk1, pk2, template_na
     data['atividade'] = atividade
     data['submissoes_list'] = submissoes
    
+    return render(request, template_name, data)
+
+
+def professor_disciplina_interacao(request, pk1, template_name='programacao/professor_disciplina_interacao_edit.html'):
+    disciplina = get_object_or_404(Disciplina, pk=pk1)
+
+    form = InteracaoForm(request.POST or None)    
+    if request.method=='POST':
+        if form.is_valid():
+            interacao = form.save(commit = False)
+            interacao.disciplina = disciplina
+            interacao.save()
+            return redirect('programacao:professor_disciplina_edit', pk=pk1)
+   
+    data = {}
+    data['form'] = form
+    data['disciplina'] = disciplina
+    return render(request, template_name, data)
+
+
+def professor_disciplina_interacao_edit(request, pk1, pk2, template_name='programacao/professor_disciplina_interacao_edit.html'):
+    disciplina = get_object_or_404(Disciplina, pk=pk1)
+    interacao = get_object_or_404(Interacao, pk=pk2)
+
+    form = InteracaoForm(request.POST or None, instance=interacao)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_disciplina_edit', pk=pk1)
+        else:
+            form = InteracaoForm(request.POST or None) 
+   
+    data = {}
+    data['form'] = form
+    data['disciplina'] = disciplina
+    return render(request, template_name, data)
+
+
+def professor_disciplina_interacao_delete(request, pk1, pk2, template_name='programacao/professor_disciplina_confirm_delete.html'):
+    disciplina = get_object_or_404(Disciplina, pk=pk1)
+    interacao = get_object_or_404(Interacao, pk=pk2)
+    
+    if request.method=='POST':
+        interacao.delete()
+        return redirect('programacao:professor_disciplina_edit', pk=pk1)
+    
+    data = {}
+    data['disciplina'] = disciplina
     return render(request, template_name, data)

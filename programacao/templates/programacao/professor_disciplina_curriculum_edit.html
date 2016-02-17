@@ -177,7 +177,7 @@
                                     <tbody>
                                         {% for obj in atividades_list %}
                                         <tr>
-                                            <td>{{ obj.titulo }}</td>
+                                            <td>{{ obj.titulo }} </td>
                                             <td class="center"><a href={% url "programacao:professor_disciplina_atividade_edit" disciplina.id obj.id %}><button type="button" class="btn btn-sm btn-warning" name="acao" value="editar">Editar</button></a></td>
                                             <td class="center"><a href={% url "programacao:professor_disciplina_atividade_delete" disciplina.id obj.id %}><button type="button" class="btn btn-sm btn-danger" name="acao" value="excluir">Excluir</button></a></td>
                                         </tr>

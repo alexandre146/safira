@@ -89,8 +89,21 @@ class AlunoDisciplina(models.Model):
         return reverse(viewname='programacao:aluno_disciplina_edit', kwargs={'pk': self.pk})
 
 
+class Interacao(models.Model):
+    titulo = models.CharField(max_length=200)
+    disciplina = models.ForeignKey(Disciplina)
+    ordem = models.IntegerField(null=True, blank=True)
+
+    def __unicode__(self):
+        return (self.titulo)
+
+    def get_absolute_url(self):
+        return reverse(viewname='programacao:disciplina_interacao_edit', kwargs={'pk': self.pk})
+    
+
 class ObjetivoProgramacao(Objetivo):
     curriculum = models.ForeignKey(Curriculum)
+    interacao = models.ForeignKey(Interacao, null=True, blank=True)
     
     def __unicode__(self):
         return (self.titulo)
@@ -100,6 +113,7 @@ class ObjetivoProgramacao(Objetivo):
 
 
 class TopicoProgramacao(Topico):
+    interacao = models.ForeignKey(Interacao, null=True, blank=True)
    
     def __unicode__(self):
         return (self.titulo)
@@ -111,13 +125,14 @@ class TopicoProgramacao(Topico):
 class AtividadeProgramacao(Atividade):
     autor = models.ForeignKey(Professor)
     deadline = models.DateTimeField(null=True, blank=True)
+    interacao = models.ForeignKey(Interacao, null=True, blank=True)
 
     def __unicode__(self):
         return (self.titulo)
 
     def get_absolute_url(self):
         return reverse(viewname='programacao:professor_disciplina_atividade_edit', kwargs={'pk': self.pk})
-    
+ 
     
 # file will be uploaded to MEDIA_ROOT/submissao/<username>/<filename>
 def user_teste_directory_path(instance, filename):
@@ -154,5 +169,14 @@ class AlunoSubmissaoExercicioPratico(models.Model):
 
     def get_absolute_url(self):
         return reverse(viewname='programacao:aluno_atividade_exercicio_submissao_edit', kwargs={'pk': self.pk})
-
     
+
+class SuporteProgramacao(Suporte):
+    interacao = models.ForeignKey(Interacao, null=True, blank=True)
+    
+    def __unicode__(self):
+        return (self.titulo + "(" + self.tipo + ")")
+
+    def get_absolute_url(self):
+        return reverse(viewname='programacao:professor_disciplina_suporte', kwargs={'pk': self.pk})
+

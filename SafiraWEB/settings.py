@@ -81,13 +81,21 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
 DATE_FORMAT = 'd/m/Y'
 
-DATETIME_FORMAT = 'd/m/Y - H:i:s'
+DATE_INPUT_FORMATS = (
+    ['%d/%m/%Y',]  # '25/10/2006'
+)
+
+DATETIME_FORMAT = 'h:m:s d/m/Y'
+
+DATETIME_INPUT_FORMATS = (
+    ['%d/%m/%Y %H:%M:%S',]  # '25/10/2006 00:00:00'
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/

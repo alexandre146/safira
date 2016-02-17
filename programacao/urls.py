@@ -58,4 +58,7 @@ urlpatterns = patterns('',
     url(r'^professor/disciplina/(?P<pk1>\d+)/suporte/delete/(?P<pk2>\d+)/$', views.professor_disciplina_suporte_delete, name='professor_disciplina_suporte_delete'),    
     url(r'^professor/disciplina/topico_atividade/$', views.professor_disciplina_topico_atividade, name='professor_disciplina_topico_atividade'),
     url(r'^professor/disciplina/(?P<pk1>\d+)/(?P<pk2>\d+)/topico_atividade/$', views.professor_disciplina_topico_atividade_add, name='professor_disciplina_topico_atividade_add'),
+    url(r'^professor/disciplina/(?P<pk1>\d+)/interacao/$', views.professor_disciplina_interacao, name='professor_disciplina_interacao'),
+    url(r'^professor/disciplina/(?P<pk1>\d+)/interacao/edit/(?P<pk2>\d+)/$', views.professor_disciplina_interacao_edit, name='professor_disciplina_interacao_edit'),
+    url(r'^professor/disciplina/(?P<pk1>\d+)/interacao/delete/(?P<pk2>\d+)/$', views.professor_disciplina_interacao_delete, name='professor_disciplina_interacao_delete'),
 )
