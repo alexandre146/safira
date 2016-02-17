@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.forms import ModelForm
 
-from mathema.models import Suporte, Atividade, Topico, Objetivo, TopicoAtividade
+from mathema.models import Suporte, Atividade, Topico, Objetivo, TopicoAtividade,\
+    TopicoSuporte
 
 class SuporteForm(ModelForm):
     class Meta:
@@ -31,3 +32,10 @@ class ObjetivoForm(ModelForm):
     class Meta:
         model = Objetivo
         fields = ['titulo', 'descricao', 'ordem']
+        
+        
+class TopicoSuporteForm(ModelForm):
+    class Meta:
+        model = TopicoSuporte
+        fields = ['topico', 'suporte', 'ordem']
+

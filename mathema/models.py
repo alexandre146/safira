@@ -56,7 +56,8 @@ class Topico(models.Model):
     ordem = models.IntegerField(null=True, blank=True)
     objetivo = models.ForeignKey(Objetivo, null=True, blank=True)
     topicoPai = models.ForeignKey('self', null=True, blank=True)
-    suportes = models.ManyToManyField(Suporte, null=True, blank=True)
+#     suportes = models.ManyToManyField(Suporte, null=True, blank=True)
+    suportes = models.ManyToManyField(Suporte, through='TopicoSuporte', null=True, blank=True)
     atividades = models.ManyToManyField(Atividade, through='TopicoAtividade', null=True, blank=True)
 
     def __unicode__(self):              # __unicode__ on Python 2
@@ -73,3 +74,13 @@ class TopicoAtividade(models.Model):
 
     def __unicode__(self):              # __unicode__ on Python 2
         return self.topico.titulo + " possui " + self.atividade.titulo
+
+
+class TopicoSuporte(models.Model):
+    topico = models.ForeignKey(Topico)
+    suporte = models.ForeignKey(Suporte)
+    ordem = models.IntegerField(null=True, blank=True)
+
+    def __unicode__(self):              # __unicode__ on Python 2
+        return self.topico.titulo + " possui " + self.suporte.titulo + " (" + self.suporte.tipo + ") "
+    

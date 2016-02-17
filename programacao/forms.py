@@ -93,7 +93,7 @@ class DisciplinaObjetivoForm(ModelForm):
 class DisciplinaTopicoForm(ModelForm):
     class Meta:
         model = TopicoProgramacao
-        fields = ['objetivo', 'titulo', 'descricao', 'ordem', 'topicoPai', 'suportes']
+        fields = ['objetivo', 'titulo', 'descricao', 'ordem', 'topicoPai']
 
 
 class DisciplinaAtividadeForm(ModelForm):

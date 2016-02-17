@@ -80,6 +80,18 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.CreateModel(
+            name='TopicoSuporte',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('ordem', models.IntegerField(null=True, blank=True)),
+                ('suporte', models.ForeignKey(to='mathema.Suporte')),
+                ('topico', models.ForeignKey(to='mathema.Topico')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
         migrations.AddField(
             model_name='topico',
             name='atividades',
@@ -95,7 +107,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='topico',
             name='suportes',
-            field=models.ManyToManyField(to='mathema.Suporte', null=True, blank=True),
+            field=models.ManyToManyField(to='mathema.Suporte', null=True, through='mathema.TopicoSuporte', blank=True),
             preserve_default=True,
         ),
         migrations.AddField(

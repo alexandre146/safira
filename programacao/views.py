@@ -24,6 +24,7 @@ from programacao.models import Aluno, Professor, Disciplina, AlunoDisciplina, Ob
     AtividadeProgramacao, ExercicioPratico, AlunoSubmissaoExercicioPratico,\
     Curriculum, Interacao
 from django.db.transaction import commit
+from mathema.forms import TopicoSuporteForm
 
 def index(request, template_name='programacao/index.html'):
     if request.method=='POST':
@@ -387,34 +388,44 @@ def professor_disciplina_edit(request, pk, template_name='programacao/professor_
 
     interacao_list = Interacao.objects.filter(disciplina_id=disciplina.id)
     
-    curriculum = Curriculum.objects.get(id=disciplina.curriculum_id)
+    try:
+        curriculum = Curriculum.objects.get(id=disciplina.curriculum_id)
 
-    objetivos = ObjetivoProgramacao.objects.filter(curriculum_id=curriculum.id).order_by('ordem')
-    topicos = []
-    atividades = []
-    suportes = []
+        objetivos = ObjetivoProgramacao.objects.filter(curriculum_id=curriculum.id).order_by('ordem')
+        topicos = []
+        atividades = []
+        suportes = []
+        
+        for obj in objetivos :
+            topicos.extend(list(TopicoProgramacao.objects.filter(objetivo_id=obj.id)))
     
-    for obj in objetivos :
-        topicos.extend(list(TopicoProgramacao.objects.filter(objetivo_id=obj.id)))
-
-    for obj in topicos :
-        suportes.extend(list(obj.suportes.all()))
-        tas = TopicoAtividade.objects.filter(topico_id=obj.id)
-        for ta in tas :
-            atividades.extend(list(AtividadeProgramacao.objects.filter(id=ta.atividade.id)))
+        for obj in topicos :
+            suportes.extend(list(obj.suportes.all()))
+            tas = TopicoAtividade.objects.filter(topico_id=obj.id)
+            for ta in tas :
+                atividades.extend(list(AtividadeProgramacao.objects.filter(id=ta.atividade.id)))
+        
+        for obj in atividades :
+            suportes.extend(list(obj.suportes.all()))
     
-    for obj in atividades :
-        suportes.extend(list(obj.suportes.all()))
+        data = {}
+        data['form'] = form
+        data['disciplina'] = disciplina
+        data['curriculum'] = curriculum
+        data['interacao_list'] = interacao_list
+        data['objetivos_list'] = objetivos
+        data['topicos_list'] = topicos
+        data['atividades_list'] = atividades
+        data['suportes_list'] = suportes
+        return render(request, template_name, data)
+    except:
+        pass
+        #add mensagem
 
     data = {}
     data['form'] = form
     data['disciplina'] = disciplina
-    data['curriculum'] = curriculum
     data['interacao_list'] = interacao_list
-    data['objetivos_list'] = objetivos
-    data['topicos_list'] = topicos
-    data['atividades_list'] = atividades
-    data['suportes_list'] = suportes
     return render(request, template_name, data)
 
 
@@ -427,6 +438,7 @@ def professor_disciplina_delete(request, pk, template_name='programacao/professo
     
     data = {}
     data['disciplina'] = disciplina
+    
     return render(request, template_name, data)
 
 
@@ -437,6 +449,28 @@ def professor_curriculum(request, template_name='programacao/professor_curriculu
 #             professor = Professor.objects.get(user_id=request.user.id) AUTOR
             form.save()
             return redirect('programacao:professor_curriculum')
+        else : 
+            form = CurriculumForm()
+
+    data = {}
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_curriculum_add(request, pk1, template_name='programacao/professor_curriculum_edit.html'):
+    disciplina = get_object_or_404(Disciplina, pk=pk1)
+    
+    form = CurriculumForm(request.POST or None)
+    if request.method=='POST':
+        if form.is_valid():
+#             professor = Professor.objects.get(user_id=request.user.id) AUTOR
+            curriculum = form.save() 
+            
+            disciplina.curriculum_id = curriculum.id
+            disciplina.curriculum = curriculum
+            disciplina.save()
+
+            return redirect('programacao:professor_disciplina_edit', pk=pk1)
         else : 
             form = CurriculumForm()
 
@@ -457,12 +491,12 @@ def professor_curriculum_edit(request, pk, template_name='programacao/professor_
             form = CurriculumForm()
 
     data = {}
-    data['curriculum'] = curriculum
     data['form'] = form
+    data['curriculum'] = curriculum
     return render(request, template_name, data)
 
 
-def professor_disciplina_curriculum(request, pk, template_name='programacao/professor_disciplina_curriculum_edit.html'):   
+def professor_disciplina_curriculum(request, pk, template_name='programacao/professor_disciplina_curriculum.html'):   
     disciplina = get_object_or_404(Disciplina, pk=pk)
     curriculum_list = Curriculum.objects.all()
 
@@ -883,6 +917,23 @@ def professor_disciplina_suporte_delete(request, pk1, pk2, template_name='progra
     data['suporte'] = suporte
     data['disciplina_id'] = pk1
     return render(request, template_name, data)
+
+
+def professor_disciplina_topico_suporte(request, template_name='programacao/professor_disciplina_topico_suporte.html'):
+    if request.method=='POST':
+        form = TopicoSuporteForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_disciplina_topico_suporte')
+        else : 
+            form = TopicoSuporteForm()
+
+    form = TopicoSuporteForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    return render(request, template_name, data)
+
 
 def professor_disciplina_atividade_exercicio(request, pk1, pk2, template_name='programacao/professor_disciplina_atividade_exercicio_edit.html'):
     atividade = get_object_or_404(AtividadeProgramacao, pk=pk2)

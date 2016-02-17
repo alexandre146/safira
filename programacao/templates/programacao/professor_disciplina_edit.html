@@ -77,7 +77,8 @@
                             <div class="alert alert-info">
                                 Nenhum curriculum selecionado! <br>
                             </div>
-                            <a href={% url "programacao:professor_disciplina_curriculum" disciplina.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="editar">Selecionar curriculum para importar</button></a> 
+                            <a href={% url "programacao:professor_curriculum_add" disciplina.id %}><button type="button" class="btn btn-sm btn-success" name="acao" value="add">Cadastrar curriculum</button></a>
+                            <a href={% url "programacao:professor_disciplina_curriculum" disciplina.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="selecionar">Selecionar curriculum para importar</button></a> 
                         {% endif %}
                     </div>
                     <!-- /.col-lg-12 (nested) -->
