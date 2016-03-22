@@ -84,25 +84,10 @@
                     <a href=""><i class="fa fa-edit fa-fw"></i> Autor de currículo (Mathema)<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href={% url "programacao:professor_curriculum" %}><i class="fa fa-graduation-cap fa-fw"></i> Curriculum </a>
+                            <a href={% url "mathema:curriculum_list" %}><i class="fa fa-graduation-cap fa-fw"></i> Curriculum </a>
                         </li>
                         <li>
-                            <a href={% url "programacao:professor_disciplina_objetivo" %}><i class="fa fa-graduation-cap fa-fw"></i> Objetivos de aprendizagem </a>
-                        </li>
-                        <li>
-                            <a href={% url "programacao:professor_disciplina_topico" %}><i class="fa fa-list-alt fa-fw"></i> Tópicos </a>
-                        </li>
-                        <li>
-                            <a href={% url "programacao:professor_disciplina_atividade" %}><i class="fa fa-tasks fa-fw"></i> Atividades </a>
-                        </li>
-                        <li>
-                            <a href={% url "programacao:professor_disciplina_topico_atividade" %}><i class="fa fa-exchange fa-fw"></i> Tópicos e suas atividades</a>
-                        </li>
-                        <li>
-                            <a href={% url "programacao:professor_disciplina_suporte" %}><i class="fa fa-film fa-fw"></i> Estrutras de suporte </a>
-                        </li>
-                        <li>
-                            <a href={% url "programacao:professor_disciplina_topico_suporte" %}><i class="fa fa-exchange fa-fw"></i> Tópicos e suas estruturas de suporte</a>
+                            <a href={% url "mathema:suporte_list" %}><i class="fa fa-film fa-fw"></i> Estrutras de suporte </a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->

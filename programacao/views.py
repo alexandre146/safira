@@ -602,7 +602,8 @@ def professor_curriculum_delete(request, pk1, pk2, template_name='programacao/pr
     return render(request, template_name, data)
 
 
-def professor_disciplina_objetivo(request, template_name='programacao/professor_disciplina_objetivo_edit.html'):   
+def professor_disciplina_objetivo(request, template_name='programacao/professor_disciplina_objetivo_edit.html'):
+    objetivo_list = ObjetivoProgramacao.objects.all()   
     if request.method=='POST':
         form = DisciplinaObjetivoForm(request.POST or None)
         if form.is_valid():
@@ -615,6 +616,7 @@ def professor_disciplina_objetivo(request, template_name='programacao/professor_
 
     data = {}
     data['form'] = form
+    data['objetivo_list'] = objetivo_list
     return render(request, template_name, data)
 
 
@@ -642,6 +644,7 @@ def professor_disciplina_objetivo_add(request, pk1, pk2, template_name='programa
 
 
 def professor_disciplina_objetivo_edit(request, pk1, pk2, template_name='programacao/professor_disciplina_objetivo_edit.html'):
+    objetivo_list = ObjetivoProgramacao.objects.all()
     objetivo = get_object_or_404(ObjetivoProgramacao, pk=pk2)
     form = DisciplinaObjetivoForm(request.POST or None, instance=objetivo)
     if request.method=='POST':
@@ -655,6 +658,7 @@ def professor_disciplina_objetivo_edit(request, pk1, pk2, template_name='program
     data['objetivo'] = objetivo
     data['disciplina_id'] = pk1
     data['form'] = form
+    data['objetivo_list'] = objetivo_list
     return render(request, template_name, data)
 
 
@@ -932,6 +936,27 @@ def professor_disciplina_topico_suporte(request, template_name='programacao/prof
 
     data = {}
     data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_disciplina_topico_suporte_add(request, pk1, pk2, template_name='programacao/professor_disciplina_topico_suporte.html'):
+    disciplina = get_object_or_404(Disciplina, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)    
+    
+    if request.method=='POST':
+        form = TopicoSuporteForm(request.POST or None)
+#         form.fields["atividade"].queryset = AtividadeProgramacao.objects.filter(autor_id = request.user.id)
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_disciplina_curriculum_edit', pk1=pk1, pk2=pk2)
+        else : 
+            form = TopicoSuporteForm()
+
+    form = TopicoSuporteForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    data['disciplina_id'] = pk1
     return render(request, template_name, data)
 
 

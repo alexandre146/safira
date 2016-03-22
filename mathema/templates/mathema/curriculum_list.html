@@ -1,0 +1,93 @@
+{% extends "base_professor.html" %}
+
+{% load bootstrap %}
+
+{% block page_title %} Curriculum Mathema {% endblock %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel-group">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Novo curriculum
+                    </h4>
+                </div>
+                <!-- /.panel-heading -->
+                <form method="post">
+                {% csrf_token %}                
+                    <div class="panel-body">
+                        {{ curriculum_form|bootstrap }}
+                    </div>
+                    <!-- /.panel-body -->
+                    <div class="panel-footer">
+                        <button type="submit" class="btn btn-sm btn-success">Salvar</button>
+                        <input type='reset' class="btn btn-sm btn-primary" value='Limpar' name='reset'>
+                    </div>
+                    <!-- /.panel-footer -->
+                </form>
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.panel-group -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel-group">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Curriculum
+                    </h4>
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        {% if curriculum_list %}
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="col-md-1">#</th>
+                                    <th class="col-md-8">Título</th>
+                                    <th class="col-md-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for curriculum in curriculum_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ curriculum.titulo }}</td>
+                                    <td>
+                                        <a href="{% url "mathema:curriculum_edit" curriculum.id %}"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i> Editar</button></a>
+                                        <a href="{% url "mathema:curriculum_delete" curriculum.id %}"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-times"></i> Excluir</button></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                            Nenhum curriculum cadastrado!
+                        {% endif %}
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.panel-body -->
+                <div class="panel-footer">
+                </div>
+                <!-- /.panel-footer -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.panel-group -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}

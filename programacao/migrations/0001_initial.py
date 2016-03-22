@@ -112,7 +112,7 @@ class Migration(migrations.Migration):
             name='ObjetivoProgramacao',
             fields=[
                 ('objetivo_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='mathema.Objetivo')),
-                ('curriculum', models.ForeignKey(to='programacao.Curriculum')),
+                ('curriculum_temp', models.ForeignKey(to='programacao.Curriculum')),
                 ('interacao', models.ForeignKey(blank=True, to='programacao.Interacao', null=True)),
             ],
             options={

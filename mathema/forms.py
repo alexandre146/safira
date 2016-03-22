@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from django import forms
 from django.forms import ModelForm
 
 from mathema.models import Suporte, Atividade, Topico, Objetivo, TopicoAtividade,\
-    TopicoSuporte
+    TopicoSuporte, Curriculum
 
 class SuporteForm(ModelForm):
     class Meta:
@@ -16,10 +17,15 @@ class AtividadeForm(ModelForm):
         fields = ['titulo', 'descricao', 'suportes']
 
 
+# class TopicoForm(ModelForm):
+#     class Meta:
+#         model = Topico
+#         fields = ['objetivo', 'titulo', 'descricao', 'ordem', 'topicoPai', 'suportes']
+
 class TopicoForm(ModelForm):
     class Meta:
         model = Topico
-        fields = ['objetivo', 'titulo', 'descricao', 'ordem', 'topicoPai', 'suportes']
+        fields = ['titulo', 'descricao', 'ordem', 'topicoPai']
         
         
 class TopicoAtividadeForm(ModelForm):
@@ -39,3 +45,11 @@ class TopicoSuporteForm(ModelForm):
         model = TopicoSuporte
         fields = ['topico', 'suporte', 'ordem']
 
+
+class CurriculumForm(ModelForm):
+    class Meta:
+        model = Curriculum
+        fields = ['titulo', 'descricao']
+        widgets = {
+            'descricao': forms.Textarea(attrs={'rows':4, 'cols':15}),
+        }

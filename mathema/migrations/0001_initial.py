@@ -22,12 +22,36 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='AtividadeSuporte',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('ordem', models.IntegerField(null=True, blank=True)),
+                ('atividade', models.ForeignKey(to='mathema.Atividade')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Curriculum',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('titulo', models.CharField(max_length=200)),
+                ('descricao', models.CharField(max_length=500)),
+                ('dataCriacao', models.DateTimeField(null=True, blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Objetivo',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('titulo', models.CharField(max_length=100)),
                 ('descricao', models.CharField(max_length=300, null=True, blank=True)),
                 ('ordem', models.IntegerField(null=True, blank=True)),
+                ('curriculum', models.ForeignKey(to='mathema.Curriculum')),
             ],
             options={
             },
@@ -101,7 +125,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='topico',
             name='objetivo',
-            field=models.ForeignKey(blank=True, to='mathema.Objetivo', null=True),
+            field=models.ForeignKey(to='mathema.Objetivo'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -123,9 +147,15 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
+            model_name='atividadesuporte',
+            name='suporte',
+            field=models.ForeignKey(to='mathema.Suporte'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='atividade',
             name='suportes',
-            field=models.ManyToManyField(to='mathema.Suporte', null=True, blank=True),
+            field=models.ManyToManyField(to='mathema.Suporte', null=True, through='mathema.AtividadeSuporte', blank=True),
             preserve_default=True,
         ),
     ]

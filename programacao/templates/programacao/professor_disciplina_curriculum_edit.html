@@ -254,6 +254,7 @@
             <!-- /.panel-body -->
             <div class="panel-footer">
                 <a href={% url "programacao:professor_disciplina_suporte_add" disciplina.id curriculum.id %}><button type="button" class="btn btn-sm btn-success">Adicionar</button></a>
+                <a href={% url "programacao:professor_disciplina_topico_suporte_add" disciplina.id curriculum.id %}><button type="button" class="btn btn-sm btn-primary">Associar estrutura de suporte a um tópico</button></a>
             </div> 
             <!-- /.panel-footer -->
         </div>

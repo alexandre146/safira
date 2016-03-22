@@ -102,7 +102,7 @@ class Interacao(models.Model):
     
 
 class ObjetivoProgramacao(Objetivo):
-    curriculum = models.ForeignKey(Curriculum)
+    curriculum_temp = models.ForeignKey(Curriculum)
     interacao = models.ForeignKey(Interacao, null=True, blank=True)
     
     def __unicode__(self):
