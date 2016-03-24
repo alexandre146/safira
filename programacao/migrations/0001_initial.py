@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='AlunoDisciplina',
+            name='AlunoCurso',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('aluno', models.ForeignKey(to='programacao.Aluno')),
@@ -72,11 +72,11 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Disciplina',
+            name='Curso',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('titulo', models.CharField(max_length=200)),
-                ('alunos', models.ManyToManyField(to='programacao.Aluno', null=True, through='programacao.AlunoDisciplina', blank=True)),
+                ('alunos', models.ManyToManyField(to='programacao.Aluno', null=True, through='programacao.AlunoCurso', blank=True)),
                 ('curriculum', models.ForeignKey(blank=True, to='programacao.Curriculum', null=True)),
             ],
             options={
@@ -102,7 +102,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('titulo', models.CharField(max_length=200)),
                 ('ordem', models.IntegerField(null=True, blank=True)),
-                ('disciplina', models.ForeignKey(to='programacao.Disciplina')),
+                ('curso', models.ForeignKey(to='programacao.Curso')),
             ],
             options={
             },
@@ -152,7 +152,7 @@ class Migration(migrations.Migration):
             bases=('mathema.topico',),
         ),
         migrations.AddField(
-            model_name='disciplina',
+            model_name='curso',
             name='professor',
             field=models.ForeignKey(to='programacao.Professor'),
             preserve_default=True,
@@ -176,9 +176,9 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='alunodisciplina',
-            name='disciplina',
-            field=models.ForeignKey(to='programacao.Disciplina'),
+            model_name='alunocurso',
+            name='curso',
+            field=models.ForeignKey(to='programacao.Curso'),
             preserve_default=True,
         ),
     ]

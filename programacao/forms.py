@@ -4,7 +4,7 @@ from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.forms.widgets import DateTimeInput
 
-from programacao.models import Aluno, Professor, Disciplina, AlunoDisciplina,\
+from programacao.models import Aluno, Professor, Curso, AlunoCurso,\
     ObjetivoProgramacao, TopicoProgramacao, AtividadeProgramacao,\
     ExercicioPratico, AlunoSubmissaoExercicioPratico, Curriculum, Interacao
 from mathema.models import TopicoAtividade, Suporte
@@ -60,15 +60,15 @@ class ProfessorForm(ModelForm):
         fields = ['nome']
         
 
-class DisciplinaForm(ModelForm):
+class CursoForm(ModelForm):
     class Meta:
-        model = Disciplina
+        model = Curso
         fields = ['titulo']
 
 
-class DisciplinaEditForm(ModelForm):
+class CursoEditForm(ModelForm):
     class Meta:
-        model = Disciplina
+        model = Curso
         fields = ['titulo']
 
 
@@ -84,19 +84,19 @@ class CurriculumObjetivoForm(ModelForm):
         fields = ['titulo', 'descricao', 'ordem']
 
 
-class DisciplinaObjetivoForm(ModelForm):
+class CursoObjetivoForm(ModelForm):
     class Meta:
         model = ObjetivoProgramacao
         fields = ['curriculum', 'titulo', 'descricao', 'ordem']
 
 
-class DisciplinaTopicoForm(ModelForm):
+class CursoTopicoForm(ModelForm):
     class Meta:
         model = TopicoProgramacao
         fields = ['objetivo', 'titulo', 'descricao', 'ordem', 'topicoPai']
 
 
-class DisciplinaAtividadeForm(ModelForm):
+class CursoAtividadeForm(ModelForm):
     class Meta:
         model = AtividadeProgramacao
         fields = ['titulo', 'descricao', 'deadline', 'suportes']
@@ -105,13 +105,13 @@ class DisciplinaAtividadeForm(ModelForm):
         }
 
 
-class DisciplinaTopicoAtividadeForm(ModelForm):
+class CursoTopicoAtividadeForm(ModelForm):
     class Meta:
         model = TopicoAtividade
         fields = ['topico', 'atividade', 'ordem']
 
 
-class DisciplinaSuporteForm(ModelForm):
+class CursoSuporteForm(ModelForm):
     class Meta:
         model = Suporte
         fields = ['titulo', 'tipo', 'arquivo', 'link']

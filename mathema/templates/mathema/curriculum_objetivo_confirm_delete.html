@@ -6,19 +6,19 @@
     <div class="col-lg-12">
         <div class="panel panel-red">
             <div class="panel-heading">
-                Excluir estrutura de suporte 
+                Excluir objetivo
             </div>
             <form method="post">
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <div class="alert alert-danger">
                     {% csrf_token %}
-                    Você deseja realmente excluir a estrutura de suporte "{{ suporte.titulo }}"?
+                    Você deseja realmente excluir o objetivo "{{ objetivo.titulo }}"?
                 </div>
             </div>
             <!-- .panel-body -->
             <div class="panel-footer">
-                <a href={% url "mathema:suporte_list" %}><button type="button" class="btn btn-primary">Cancelar</button></a>
+                <a href={% url "mathema:curriculum_edit" curriculum.id %}><button type="button" class="btn btn-primary">Cancelar</button></a>
                 <button type="submit" class="btn btn-danger">Excluir</button>
             </div>
             </form>

@@ -3,7 +3,7 @@ from django import forms
 from django.forms import ModelForm
 
 from mathema.models import Suporte, Atividade, Topico, Objetivo, TopicoAtividade,\
-    TopicoSuporte, Curriculum
+    TopicoSuporte, Curriculum, AtividadeSuporte
 
 class SuporteForm(ModelForm):
     class Meta:
@@ -14,13 +14,13 @@ class SuporteForm(ModelForm):
 class AtividadeForm(ModelForm):
     class Meta:
         model = Atividade
-        fields = ['titulo', 'descricao', 'suportes']
+        fields = ['titulo', 'descricao']
 
 
-# class TopicoForm(ModelForm):
-#     class Meta:
-#         model = Topico
-#         fields = ['objetivo', 'titulo', 'descricao', 'ordem', 'topicoPai', 'suportes']
+class AtividadeSuporteForm(ModelForm):
+    class Meta:
+        model = AtividadeSuporte
+        fields = ['ordem']
 
 class TopicoForm(ModelForm):
     class Meta:
@@ -31,7 +31,7 @@ class TopicoForm(ModelForm):
 class TopicoAtividadeForm(ModelForm):
     class Meta:
         model = TopicoAtividade
-        fields = ['topico', 'atividade', 'ordem']
+        fields = ['ordem']
 
 
 class ObjetivoForm(ModelForm):
@@ -43,7 +43,7 @@ class ObjetivoForm(ModelForm):
 class TopicoSuporteForm(ModelForm):
     class Meta:
         model = TopicoSuporte
-        fields = ['topico', 'suporte', 'ordem']
+        fields = ['ordem']
 
 
 class CurriculumForm(ModelForm):

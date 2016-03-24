@@ -1,0 +1,150 @@
+{% extends "base_professor.html" %}
+
+{% load bootstrap %}
+
+{% block page_title %} Disciplina {% endblock %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Dados da disciplina
+            </div>
+            
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <form method="post">
+                            {% csrf_token %}
+                                {{ form|bootstrap }}
+                                <button type="submit" class="btn btn-sm btn-success">Salvar</button>
+                                {% if disciplina %}
+                                <a href={% url "programacao:professor_minhas_disciplinas" %}><button type="button" class="btn btn-sm btn-primary">Voltar</button></a>
+                                {% else %}
+                                <input type='reset' class="btn btn-sm btn-primary" value='Limpar' name='reset'>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Curriculum
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% if curriculum %}
+                            <div class="dataTable_wrapper">
+                                <table class="table table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-md-2">Título</th>
+                                            <th class="col-md-8">Descrição</th>
+                                            <th class="col-md-1"></th>
+                                            <th class="col-md-1"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ curriculum.titulo }}</td>
+                                            <td>{{ curriculum.descricao }}</td>
+                                            <td class="center"><a href={% url "programacao:professor_disciplina_curriculum_edit" disciplina.id curriculum.id %}><button type="button" class="btn btn-sm btn-warning" name="acao" value="editar">Editar</button></a></td>
+                                            <td class="center"><a href={% url "programacao:professor_curriculum_delete" disciplina.id curriculum.id %}><button type="button" class="btn btn-sm btn-danger" name="acao" value="excluir">Excluir</button></a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                        {% else %}
+                            <div class="alert alert-info">
+                                Nenhum curriculum selecionado! <br>
+                            </div>
+                            <a href={% url "programacao:professor_curriculum_add" disciplina.id %}><button type="button" class="btn btn-sm btn-success" name="acao" value="add">Cadastrar curriculum</button></a>
+                            <a href={% url "programacao:professor_disciplina_curriculum" disciplina.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="selecionar">Selecionar curriculum para importar</button></a> 
+                        {% endif %}
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Interações da disciplina
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% if interacao_list %}
+                            <div class="dataTable_wrapper">
+                                <table class="table table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-md-2">Ordem</th>
+                                            <th class="col-md-8">Titulo</th>
+                                            <th class="col-md-1"></th>
+                                            <th class="col-md-1"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for interacao in interacao_list %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ interacao.titulo }}</td>
+                                            <td class="center"><a href={% url "programacao:professor_disciplina_interacao_edit" disciplina.id interacao.id %}><button type="button" class="btn btn-sm btn-warning" name="acao" value="editar">Editar</button></a></td>
+                                            <td class="center"><a href={% url "programacao:professor_disciplina_interacao_delete" disciplina.id interacao.id %}><button type="button" class="btn btn-sm btn-danger" name="acao" value="excluir">Excluir</button></a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <!-- /.table-responsive -->
+                            <div class="alert alert-info">
+                                Nenhuma interação cadastrada! <br>
+                            </div>
+                        {% endif %}
+                            <a href={% url "programacao:professor_disciplina_interacao" disciplina.id %}><button type="button" class="btn btn-sm btn-success" name="acao" value="adicionar">Adicionar</button></a> 
+                    </div>
+                    <!-- /.col-lg-12 (nested) -->
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}

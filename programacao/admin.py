@@ -4,7 +4,7 @@ import os
 from django.contrib import admin
 from django.conf import settings
 
-from programacao.models import Aluno, Professor, Disciplina, AlunoDisciplina, \
+from programacao.models import Aluno, Professor, Curso, AlunoCurso, \
     ObjetivoProgramacao, TopicoProgramacao, AtividadeProgramacao,\
     AlunoSubmissaoExercicioPratico, ExercicioPratico, Curriculum
 
@@ -21,8 +21,8 @@ class ProfessorAdmin(admin.ModelAdmin):
 
 admin.site.register(Aluno)
 admin.site.register(Professor, ProfessorAdmin)
-admin.site.register(Disciplina)
-admin.site.register(AlunoDisciplina)
+admin.site.register(Curso)
+admin.site.register(AlunoCurso)
 admin.site.register(Curriculum)
 admin.site.register(ObjetivoProgramacao)
 admin.site.register(TopicoProgramacao)

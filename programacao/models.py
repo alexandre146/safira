@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.db import models
 import os
 
-from django.db import models
-from django.core.urlresolvers import reverse
-from django.conf import settings
+from mathema.models import Objetivo, Topico, Atividade, Suporte
 
-from mathema.models import Objetivo, Topico, Atividade, TopicoAtividade, Suporte
 
 class Professor(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -65,10 +65,10 @@ class Curriculum(models.Model):
         return reverse(viewname='programacao:professor_curriculum_edit', kwargs={'pk': self.pk})
     
 
-class Disciplina(models.Model):
+class Curso(models.Model):
     titulo = models.CharField(max_length=200)
     professor = models.ForeignKey(Professor)
-    alunos = models.ManyToManyField(Aluno, through='AlunoDisciplina', null=True, blank=True)
+    alunos = models.ManyToManyField(Aluno, through='AlunoCurso', null=True, blank=True)
     curriculum = models.ForeignKey(Curriculum, null=True, blank=True)
     
     def __unicode__(self):
@@ -78,27 +78,27 @@ class Disciplina(models.Model):
         return reverse('programacao:suporte_edit', kwargs={'pk': self.pk})
 
 
-class AlunoDisciplina(models.Model):
-    disciplina = models.ForeignKey(Disciplina)
+class AlunoCurso(models.Model):
+    curso = models.ForeignKey(Curso)
     aluno = models.ForeignKey(Aluno)
 
     def __unicode__(self):
-        return ("%s na disciplina %s" % (self.aluno, self.disciplina))
+        return ("%s no curso %s" % (self.aluno, self.curso))
 
     def get_absolute_url(self):
-        return reverse(viewname='programacao:aluno_disciplina_edit', kwargs={'pk': self.pk})
+        return reverse(viewname='programacao:aluno_curso_edit', kwargs={'pk': self.pk})
 
 
 class Interacao(models.Model):
     titulo = models.CharField(max_length=200)
-    disciplina = models.ForeignKey(Disciplina)
+    curso = models.ForeignKey(Curso)
     ordem = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
         return (self.titulo)
 
     def get_absolute_url(self):
-        return reverse(viewname='programacao:disciplina_interacao_edit', kwargs={'pk': self.pk})
+        return reverse(viewname='programacao:curso_interacao_edit', kwargs={'pk': self.pk})
     
 
 class ObjetivoProgramacao(Objetivo):
@@ -109,7 +109,7 @@ class ObjetivoProgramacao(Objetivo):
         return (self.titulo)
 
     def get_absolute_url(self):
-        return reverse(viewname='programacao:disciplina_objetivo_edit', kwargs={'pk': self.pk})
+        return reverse(viewname='programacao:curso_objetivo_edit', kwargs={'pk': self.pk})
 
 
 class TopicoProgramacao(Topico):
@@ -119,7 +119,7 @@ class TopicoProgramacao(Topico):
         return (self.titulo)
 
     def get_absolute_url(self):
-        return reverse(viewname='programacao:professor_disciplina_topico_edit', kwargs={'pk': self.pk})
+        return reverse(viewname='programacao:professor_curso_topico_edit', kwargs={'pk': self.pk})
     
 
 class AtividadeProgramacao(Atividade):
@@ -131,7 +131,7 @@ class AtividadeProgramacao(Atividade):
         return (self.titulo)
 
     def get_absolute_url(self):
-        return reverse(viewname='programacao:professor_disciplina_atividade_edit', kwargs={'pk': self.pk})
+        return reverse(viewname='programacao:professor_curso_atividade_edit', kwargs={'pk': self.pk})
  
     
 # file will be uploaded to MEDIA_ROOT/submissao/<username>/<filename>
@@ -149,7 +149,7 @@ class ExercicioPratico(models.Model):
         return (self.titulo)
 
     def get_absolute_url(self):
-        return reverse(viewname='programacao:professor_disciplina_atividade_exercicio_edit', kwargs={'pk': self.pk})
+        return reverse(viewname='programacao:professor_curso_atividade_exercicio_edit', kwargs={'pk': self.pk})
 
     
 # file will be uploaded to MEDIA_ROOT/submissao/<username>/<filename>
@@ -178,5 +178,5 @@ class SuporteProgramacao(Suporte):
         return (self.titulo + "(" + self.tipo + ")")
 
     def get_absolute_url(self):
-        return reverse(viewname='programacao:professor_disciplina_suporte', kwargs={'pk': self.pk})
+        return reverse(viewname='programacao:professor_curso_suporte', kwargs={'pk': self.pk})
 

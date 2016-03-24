@@ -1,0 +1,41 @@
+{% extends "base_professor.html" %}
+
+{% load bootstrap %}
+
+{% block page_title %} Curriculum Mathema {% endblock %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel-group">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        Editar estrutura de suporte
+                    </h4>
+                </div>
+                <!-- /.panel-heading -->
+                <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}                
+                    <div class="panel-body">
+                        {{ suporte_form|bootstrap }}
+                    </div>
+                    <!-- /.panel-body -->
+                    <div class="panel-footer">
+                        <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-check"></i> Salvar</button>
+                        <input type='reset' class="btn btn-sm btn-primary" value='Limpar' name='reset'>
+                        <a href={% url "mathema:suporte_list"%}><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-arrow-left"></i> Voltar</button></a>
+                    </div>
+                    <!-- /.panel-footer -->
+                </form>
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.panel-group -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}
