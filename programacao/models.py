@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 import os
 
-from mathema.models import Objetivo, Topico, Atividade, Suporte
+from mathema.models import Objetivo, Topico, Atividade, Suporte, Curriculum
 
 
 class Professor(models.Model):
@@ -52,18 +52,6 @@ class Aluno(models.Model):
     class Meta:
         permissions=(('view_aluno', 'view_aluno'),)
 
-
-class Curriculum(models.Model):
-    titulo = models.CharField(max_length=200)
-    descricao = models.CharField(max_length=500)
-    dataCriacao = models.DateField(null=True, blank=True)
-    
-    def __unicode__(self):
-        return (self.titulo)
-    
-    def get_absolute_url(self):
-        return reverse(viewname='programacao:professor_curriculum_edit', kwargs={'pk': self.pk})
-    
 
 class Curso(models.Model):
     titulo = models.CharField(max_length=200)
@@ -123,7 +111,6 @@ class TopicoProgramacao(Topico):
     
 
 class AtividadeProgramacao(Atividade):
-    autor = models.ForeignKey(Professor)
     deadline = models.DateTimeField(null=True, blank=True)
     interacao = models.ForeignKey(Interacao, null=True, blank=True)
 

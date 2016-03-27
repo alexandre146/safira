@@ -60,24 +60,12 @@ class Migration(migrations.Migration):
             bases=('mathema.atividade',),
         ),
         migrations.CreateModel(
-            name='Curriculum',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('titulo', models.CharField(max_length=200)),
-                ('descricao', models.CharField(max_length=500)),
-                ('dataCriacao', models.DateField(null=True, blank=True)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='Curso',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('titulo', models.CharField(max_length=200)),
                 ('alunos', models.ManyToManyField(to='programacao.Aluno', null=True, through='programacao.AlunoCurso', blank=True)),
-                ('curriculum', models.ForeignKey(blank=True, to='programacao.Curriculum', null=True)),
+                ('curriculum', models.ForeignKey(blank=True, to='mathema.Curriculum', null=True)),
             ],
             options={
             },
@@ -112,7 +100,7 @@ class Migration(migrations.Migration):
             name='ObjetivoProgramacao',
             fields=[
                 ('objetivo_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='mathema.Objetivo')),
-                ('curriculum_temp', models.ForeignKey(to='programacao.Curriculum')),
+                ('curriculum_temp', models.ForeignKey(to='mathema.Curriculum')),
                 ('interacao', models.ForeignKey(blank=True, to='programacao.Interacao', null=True)),
             ],
             options={
@@ -154,12 +142,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='curso',
             name='professor',
-            field=models.ForeignKey(to='programacao.Professor'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='atividadeprogramacao',
-            name='autor',
             field=models.ForeignKey(to='programacao.Professor'),
             preserve_default=True,
         ),

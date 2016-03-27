@@ -265,11 +265,9 @@
                                                                             
                                                                             {% endfor %}
                                                                             {% endif %}
-                    
-                    
                                                                             <br>
-                                                                            <!-- Modal de um novo suporte (em tópico) - inicio-->
-                                                                            <div class="modal fade" id="modalSuporteAtividadeNovo" tabindex="-1" role="dialog" aria-labelledby="modalLabelSuporteAtividadeNovo" aria-hidden="true">
+                                                                            <!-- Modal de um novo suporte (em atividade) - inicio-->
+                                                                            <div class="modal fade" id="modalSuporteAtividadeNovo{{atividade.id}}" tabindex="-1" role="dialog" aria-labelledby="modalLabelSuporteAtividadeNovo{{atividade.id}}" aria-hidden="true">
                                                                                 <div class="modal-dialog">
                                                                                     <div class="modal-content">
                                                                                         <!-- Detalhes da suporte -->
@@ -277,10 +275,10 @@
                                                                                         {% csrf_token %}
                                                                                             <div class="modal-header">
                                                                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                                                                <h4 class="modal-title" id="modalLabelSuporteAtividadeNovo"> Novo suporte </h4>
+                                                                                                <h4 class="modal-title" id="modalLabelSuporteAtividadeNovo{{atividade.id}}"> Novo suporte </h4>
                                                                                             </div>
                                                                                             <div class="modal-body">
-                                                                                                <input class=" form-control" id="id_atividade" name="id_atividade" type="hidden" value="{{ atividade.id }}"/>
+                                                                                                <input class=" form-control" id="id_atividade" name="id_atividade" type="hidden" value="{{atividade.id}}"/>
                                                                                                 {{ suporte_novo_form|bootstrap }}
                                                                                                 {{ atividade_suporte_form|bootstrap }}
                                                                                             </div>
@@ -295,8 +293,60 @@
                                                                                 <!-- /.modal-dialog -->
                                                                             </div>
                                                                             <!-- /.modal -->
-                                                                            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalSuporteAtividadeNovo"><i class="fa fa-plus"></i> Novo suporte</button>
-                                                                            <!-- Modal de um novo suporte (em tópico) - final -->
+                                                                            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalSuporteAtividadeNovo{{atividade.id}}"><i class="fa fa-plus"></i> Novo suporte</button>
+                                                                            <!-- Modal de um novo suporte (em atividade) - final -->
+
+                                                                            <!-- Modal para adicionar um suporte existente - inicio-->
+                                                                            <div class="modal fade" id="modalAddSuporteAtividade" tabindex="-1" role="dialog" aria-labelledby="modalLabelAddSuporteAtividade" aria-hidden="true">
+                                                                                <div class="modal-dialog">
+                                                                                    <div class="modal-content">
+                                                                                        <!-- Detalhes do suporte -->
+                                                                                        <form method="post" enctype="multipart/form-data">
+                                                                                        {% csrf_token %}
+                                                                                            <input class=" form-control" id="id_atividade" name="id_atividade" type="hidden" value="{{ atividade.id }}"/>
+                                                                                            <div class="modal-header">
+                                                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                                                <h4 class="modal-title" id="modalLabelAddSuporteAtividade"> Adicionar suporte </h4>
+                                                                                            </div>
+                                                                                            <div class="modal-body">
+                                                                                                <div class="form-group">
+                                                                                                    <label>Meus suportes</label>
+                                                                                                    {% if atividade.add_meus_suportes %}
+                                                                                                        <select name="id_meu_suporte_atividade" class="form-control" size="3">
+                                                                                                        {% for suporte in atividade.add_meus_suportes %}
+                                                                                                            <option value="{{suporte.id}}">{{suporte.titulo}}</option>
+                                                                                                        {% endfor %}
+                                                                                                        </select>
+                                                                                                    {% else %}
+                                                                                                        Nenhum suporte sob sua autoria!
+                                                                                                    {% endif %}
+                                                                                                </div>
+                                                                                                <div class="form-group">
+                                                                                                    <label>Outros suportes</label>
+                                                                                                    {% if atividade.add_outros_suportes %}
+                                                                                                        <select name="id_outro_suporte_atividade" class="form-control" size="3">
+                                                                                                        {% for suporte in atividade.add_outros_suportes %}
+                                                                                                            <option value="{{suporte.id}}">{{suporte.titulo}}</option>
+                                                                                                        {% endfor %}
+                                                                                                        </select>
+                                                                                                    {% else %}
+                                                                                                        Nenhum suporte cadastrado!
+                                                                                                    {% endif %}
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="modal-footer">
+                                                                                                <button type="submit" class="btn btn-sm btn-primary" name="adicionar_suporte_atividade">Adicionar</button>
+                                                                                            </div>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                    <!-- /.modal-content -->
+                                                                                </div>
+                                                                                <!-- /.modal-dialog -->
+                                                                            </div>
+                                                                            <!-- /.modal -->
+                                                                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalAddSuporteAtividade"><i class="fa fa-plus"></i> Adicionar suporte</button>
+                                                                            <!-- Modal para adicionar um suporte existente - final -->
+
                                                                         </div>
                                                                         <!-- panel-body -->
                                                                         
@@ -347,6 +397,57 @@
                                                         <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalAtividadeNova"><i class="fa fa-plus"></i> Nova atividade</button>
                                                         <!-- Modal de uma nova atividade - final -->
 
+                                                        <!-- Modal para adicionar atividade existente - inicio-->
+                                                        <div class="modal fade" id="modalAddAtividade" tabindex="-1" role="dialog" aria-labelledby="modalLabelAddAtividade" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <!-- Detalhes da atividade -->
+                                                                    <form method="post">
+                                                                    {% csrf_token %}
+                                                                        <input class=" form-control" id="id_topico" name="id_topico" type="hidden" value="{{ topico.id }}"/>
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                            <h4 class="modal-title" id="modalLabelAddAtividade"> Adicionar atividade </h4>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="form-group">
+                                                                                <label>Minhas atividades</label>
+                                                                                {% if topico.add_minhas_atividades %}
+                                                                                    <select name="id_minha_atividade" class="form-control" size="3">
+                                                                                    {% for atividade in topico.add_minhas_atividades %}
+                                                                                        <option value="{{atividade.id}}">{{atividade.titulo}}</option>
+                                                                                    {% endfor %}
+                                                                                    </select>
+                                                                                {% else %}
+                                                                                    Nenhuma atividade sob sua autoria!
+                                                                                {% endif %}
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label>Outras atividades</label>
+                                                                                {% if topico.add_outras_atividades %}
+                                                                                    <select name="id_outra_atividade" class="form-control" size="3">
+                                                                                    {% for atividade in topico.add_outras_atividades %}
+                                                                                        <option value="{{atividade.id}}">{{atividade.titulo}}</option>
+                                                                                    {% endfor %}
+                                                                                    </select>
+                                                                                {% else %}
+                                                                                    Nenhuma atividade cadastrada!
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="submit" class="btn btn-sm btn-primary" name="adicionar_atividade">Adicionar</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                                <!-- /.modal-content -->
+                                                            </div>
+                                                            <!-- /.modal-dialog -->
+                                                        </div>
+                                                        <!-- /.modal -->
+                                                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalAddAtividade"><i class="fa fa-plus"></i> Adicionar atividade</button>
+                                                        <!-- Modal para adicionar atividade existente - final -->
+
                                                     </div>
 <!-- ###################### -->
 <!-- # Suportes do tópico # -->
@@ -364,7 +465,7 @@
                                                                     <form method="post" enctype="multipart/form-data">
                                                                     {% csrf_token %}
                                                                         <div class="modal-header">
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                                                             <h4 class="modal-title" id="modalLabelSuporte{{suporte.id}}"> {{ suporte.titulo }} </h4>
                                                                         </div>
                                                                         <div class="modal-body">
@@ -419,8 +520,6 @@
                                                         
                                                         {% endfor %}
                                                         {% endif %}
-
-
                                                         <br>
                                                         <!-- Modal de um novo suporte (em tópico) - inicio-->
                                                         <div class="modal fade" id="modalSuporteNovo" tabindex="-1" role="dialog" aria-labelledby="modalLabelSuporteNovo" aria-hidden="true">
@@ -452,9 +551,58 @@
                                                         <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalSuporteNovo"><i class="fa fa-plus"></i> Novo suporte</button>
                                                         <!-- Modal de um novo suporte (em tópico) - final -->
 
+                                                        <!-- Modal para adicionar um suporte existente - inicio-->
+                                                        <div class="modal fade" id="modalAddSuporte" tabindex="-1" role="dialog" aria-labelledby="modalLabelAddSuporte" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <!-- Detalhes do suporte -->
+                                                                    <form method="post">
+                                                                    {% csrf_token %}
+                                                                        <input class=" form-control" id="id_topico" name="id_topico" type="hidden" value="{{ topico.id }}"/>
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                            <h4 class="modal-title" id="modalLabelAddSuporte"> Adicionar suporte </h4>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="form-group">
+                                                                                <label>Meus suportes</label>
+                                                                                {% if topico.add_meus_suportes %}
+                                                                                    <select name="id_meu_suporte" class="form-control" size="3">
+                                                                                    {% for suporte in topico.add_meus_suportes %}
+                                                                                        <option value="{{suporte.id}}">{{suporte.titulo}}</option>
+                                                                                    {% endfor %}
+                                                                                    </select>
+                                                                                {% else %}
+                                                                                    Nenhum suporte sob sua autoria!
+                                                                                {% endif %}
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label>Outros suportes</label>
+                                                                                {% if topico.add_outros_suportes %}
+                                                                                    <select name="id_outro_suporte" class="form-control" size="3">
+                                                                                    {% for suporte in topico.add_outros_suportes %}
+                                                                                        <option value="{{suporte.id}}">{{suporte.titulo}}</option>
+                                                                                    {% endfor %}
+                                                                                    </select>
+                                                                                {% else %}
+                                                                                    Nenhum suporte cadastrado!
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="submit" class="btn btn-sm btn-primary" name="adicionar_suporte">Adicionar</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                                <!-- /.modal-content -->
+                                                            </div>
+                                                            <!-- /.modal-dialog -->
+                                                        </div>
+                                                        <!-- /.modal -->
+                                                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalAddSuporte"><i class="fa fa-plus"></i> Adicionar suporte</button>
+                                                        <!-- Modal para adicionar um suporte existente - final -->
                                                     </div>
                                                 </div>                                    
-    
                                         </div>
                                         <!-- /.panel-body -->
                                     </div>

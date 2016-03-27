@@ -2,10 +2,12 @@
 from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 
+import copy
+
 from mathema.forms import SuporteForm, AtividadeForm, TopicoForm, ObjetivoForm, TopicoAtividadeForm, \
     CurriculumForm, TopicoSuporteForm, AtividadeSuporteForm
 from mathema.models import Suporte, Atividade, Topico, Objetivo, TopicoAtividade, \
-    Curriculum, TopicoSuporte, TipoSuporte, SuporteEditForm, AtividadeSuporte
+    Curriculum, TopicoSuporte, SuporteEditForm, AtividadeSuporte
 
 
 def curriculum_edit(request, pk, template_name='mathema/curriculum_edit.html'):
@@ -13,7 +15,7 @@ def curriculum_edit(request, pk, template_name='mathema/curriculum_edit.html'):
     curriculum_form = CurriculumForm(request.POST or None, instance=curriculum)
     
     objetivo_novo_form = ObjetivoForm(request.POST or None)
-    objetivo_list = Objetivo.objects.filter(curriculum_id = curriculum.id)
+    objetivo_list = Objetivo.objects.filter(curriculum_id = curriculum.id).order_by('ordem')
 
     topico_novo_form = TopicoForm(request.POST or None)
     atividade_nova_form = AtividadeForm(request.POST or None)
@@ -80,15 +82,12 @@ def curriculum_edit(request, pk, template_name='mathema/curriculum_edit.html'):
         atividade = Atividade.objects.get(pk=request.POST["id"])
         atividade.titulo = request.POST["titulo"]
         atividade.descricao = request.POST["descricao"]
-        if request.POST.get("suportes") :
-            atividade.suportes = request.POST.get("suportes")
         atividade.save()
         
         topico = Topico.objects.get(pk=request.POST["id_topico"])
 
-        topico_atividade = TopicoAtividade.objects.create(topico=topico, atividade=atividade)
-        data = topico_atividade_form.cleaned_data
-        topico_atividade.ordem = data['ordem']            
+        topico_atividade = TopicoAtividade.objects.get(topico=topico, atividade=atividade)
+        topico_atividade.ordem = request.POST["ordem"]
         topico_atividade.save()
         
         return redirect('mathema:curriculum_edit', pk=pk)
@@ -102,9 +101,8 @@ def curriculum_edit(request, pk, template_name='mathema/curriculum_edit.html'):
             
             topico = Topico.objects.get(pk=request.POST["id_topico"])
 
-            topico_suporte = TopicoSuporte.objects.create(topico=topico, suporte=suporte)
-            data = topico_suporte_form.cleaned_data
-            topico_suporte.ordem = data['ordem']
+            topico_suporte = TopicoSuporte.objects.get(topico=topico, suporte=suporte)
+            topico_suporte.ordem = request.POST["ordem"]
             topico_suporte.save()
 
             return redirect('mathema:curriculum_edit', pk=pk)
@@ -132,6 +130,85 @@ def curriculum_edit(request, pk, template_name='mathema/curriculum_edit.html'):
             atividade_suporte.save()
 
             return redirect('mathema:curriculum_edit', pk=pk)
+    elif request.method=='POST' and 'adicionar_suporte_atividade' in request.POST:
+        print("adicionar_suporte_atividade")
+        atividade = Atividade.objects.get(pk=request.POST["id_atividade"])
+
+        if "id_meu_suporte_atividade" in request.POST :
+            meu_suporte = Suporte.objects.get(pk=request.POST["id_meu_suporte_atividade"])
+            novo_suporte = Suporte.objects.create(titulo=meu_suporte.titulo, tipo=meu_suporte.tipo, arquivo=meu_suporte.arquivo, link=meu_suporte.link, visualizacoes=0, autor=meu_suporte.autor)
+            novo_suporte.save()
+            
+            atividade_suporte = AtividadeSuporte.objects.create(atividade=atividade, suporte=novo_suporte)
+            atividade_suporte.save()
+
+        if "id_outro_suporte_atividade" in request.POST :
+            outro_suporte = Suporte.objects.get(pk=request.POST["id_outro_suporte_atividade"])
+            novo_suporte = Suporte.objects.create(titulo=outro_suporte.titulo, tipo=outro_suporte.tipo, arquivo=outro_suporte.arquivo, link=outro_suporte.link, visualizacoes=0, autor=outro_suporte.autor)
+            novo_suporte.save()
+
+            atividade_suporte = AtividadeSuporte.objects.create(atividade=atividade, suporte=novo_suporte)
+            atividade_suporte.save()
+
+        return redirect('mathema:curriculum_edit', pk=pk)
+    elif request.method=='POST' and 'adicionar_atividade' in request.POST:
+        print("adicionar_atividade")
+        topico = Topico.objects.get(pk=request.POST["id_topico"])
+
+        if "id_minha_atividade" in request.POST :
+            minha_atividade = Atividade.objects.get(pk=request.POST["id_minha_atividade"])
+            nova_atividade = Atividade.objects.create(titulo=minha_atividade.titulo, descricao=minha_atividade.descricao, autor=minha_atividade.autor)
+            
+            for suporte in minha_atividade.get_suportes() :
+                novo_suporte = Suporte.objects.create(titulo=suporte.titulo, tipo=suporte.tipo, arquivo=suporte.arquivo, link=suporte.link, visualizacoes=0, autor=suporte.autor)
+                novo_suporte.save()
+                
+                atividade_suporte = AtividadeSuporte.objects.create(atividade=nova_atividade, suporte=novo_suporte)
+                atividade_suporte.save()
+                
+            nova_atividade.save()
+
+            topico_atividade = TopicoAtividade.objects.create(topico=topico, atividade=nova_atividade)
+            topico_atividade.save()
+
+        if "id_outra_atividade" in request.POST :
+            outra_atividade = Atividade.objects.get(pk=request.POST["id_outra_atividade"])
+            nova_atividade = Atividade.objects.create(titulo=outra_atividade.titulo, descricao=outra_atividade.descricao, autor=outra_atividade.autor)
+
+            for suporte in outra_atividade.get_suportes() :
+                novo_suporte = Suporte.objects.create(titulo=suporte.titulo, tipo=suporte.tipo, arquivo=suporte.arquivo, link=suporte.link, visualizacoes=0, autor=suporte.autor)
+                novo_suporte.save()
+                
+                atividade_suporte = AtividadeSuporte.objects.create(atividade=nova_atividade, suporte=novo_suporte)
+                atividade_suporte.save()
+
+            nova_atividade.save()
+
+            topico_atividade = TopicoAtividade.objects.create(topico=topico, atividade=nova_atividade)
+            topico_atividade.save()
+
+        return redirect('mathema:curriculum_edit', pk=pk)
+    elif request.method=='POST' and 'adicionar_suporte' in request.POST:
+        print("adicionar_suporte")
+        topico = Topico.objects.get(pk=request.POST["id_topico"])
+
+        if "id_meu_suporte" in request.POST :
+            meu_suporte = Suporte.objects.get(pk=request.POST["id_meu_suporte"])
+            novo_suporte = Suporte.objects.create(titulo=meu_suporte.titulo, tipo=meu_suporte.tipo, arquivo=meu_suporte.arquivo, link=meu_suporte.link, visualizacoes=0, autor=meu_suporte.autor)
+            novo_suporte.save()
+            
+            topico_suporte = TopicoSuporte.objects.create(topico=topico, suporte=novo_suporte)
+            topico_suporte.save()
+
+        if "id_outro_suporte" in request.POST :
+            outro_suporte = Suporte.objects.get(pk=request.POST["id_outro_suporte"])
+            novo_suporte = Suporte.objects.create(titulo=outro_suporte.titulo, tipo=outro_suporte.tipo, arquivo=outro_suporte.arquivo, link=outro_suporte.link, visualizacoes=0, autor=outro_suporte.autor)
+            novo_suporte.save()
+
+            topico_suporte = TopicoSuporte.objects.create(topico=topico, suporte=novo_suporte)
+            topico_suporte.save()
+
+        return redirect('mathema:curriculum_edit', pk=pk)    
     else:
         print('do nothing!')
 
@@ -248,7 +325,7 @@ def curriculum_suporte_delete(request, pk1, pk2, pk3, template_name='mathema/cur
     return render(request, template_name, data)
 
 
-def curriculum_suporte_atividade_delete(request, pk1, pk2, pk3, template_name='mathema/suporte_confirm_delete.html'):
+def curriculum_suporte_atividade_delete(request, pk1, pk2, pk3, template_name='mathema/curriculum_suporte_confirm_delete.html'):
     curriculum = get_object_or_404(Curriculum, pk=pk1)
     atividade = get_object_or_404(Atividade, pk=pk2)
     suporte = get_object_or_404(Suporte, pk=pk3)
@@ -262,6 +339,7 @@ def curriculum_suporte_atividade_delete(request, pk1, pk2, pk3, template_name='m
 
     data = {}
     data['curriculum'] = curriculum
+    data['suporte'] = suporte
     return render(request, template_name, data)
 
 

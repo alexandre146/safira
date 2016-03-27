@@ -16,6 +16,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('titulo', models.CharField(max_length=200)),
                 ('descricao', models.CharField(max_length=300, null=True, blank=True)),
+                ('autor', models.CharField(max_length=200)),
             ],
             options={
             },
@@ -39,6 +40,7 @@ class Migration(migrations.Migration):
                 ('titulo', models.CharField(max_length=200)),
                 ('descricao', models.CharField(max_length=500)),
                 ('dataCriacao', models.DateTimeField(null=True, blank=True)),
+                ('autor', models.CharField(max_length=200)),
             ],
             options={
             },
@@ -51,6 +53,7 @@ class Migration(migrations.Migration):
                 ('titulo', models.CharField(max_length=100)),
                 ('descricao', models.CharField(max_length=300, null=True, blank=True)),
                 ('ordem', models.IntegerField(null=True, blank=True)),
+                ('autor', models.CharField(max_length=200)),
                 ('curriculum', models.ForeignKey(to='mathema.Curriculum')),
             ],
             options={
@@ -65,6 +68,7 @@ class Migration(migrations.Migration):
                 ('arquivo', models.FileField(null=True, upload_to=b'suporte', blank=True)),
                 ('link', models.URLField(null=True, blank=True)),
                 ('visualizacoes', models.IntegerField(null=True, blank=True)),
+                ('autor', models.CharField(max_length=200)),
             ],
             options={
             },
@@ -87,6 +91,7 @@ class Migration(migrations.Migration):
                 ('titulo', models.CharField(max_length=100)),
                 ('descricao', models.CharField(max_length=300, null=True, blank=True)),
                 ('ordem', models.IntegerField(null=True, blank=True)),
+                ('autor', models.CharField(max_length=200)),
             ],
             options={
             },
