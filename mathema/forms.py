@@ -14,7 +14,10 @@ class SuporteForm(ModelForm):
 class AtividadeForm(ModelForm):
     class Meta:
         model = Atividade
-        fields = ['titulo', 'descricao']
+        fields = ['titulo', 'descricao', 'deadline']
+        widgets = {
+            'deadline': forms.DateTimeInput(attrs={'type':'datetime'}, format='%d/%m/%Y'),
+        }
 
 
 class AtividadeSuporteForm(ModelForm):

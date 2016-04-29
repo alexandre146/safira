@@ -2,7 +2,7 @@
 
 {% load bootstrap %}
 
-{% block page_title %} Disciplinas {% endblock %}
+{% block page_title %} Cursos {% endblock %}
 
 {% block main %}
 
@@ -10,12 +10,12 @@
     <div class="col-lg-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                Minhas disciplinas
+                Meus cursos
             </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        {% if disciplinas_list %}
+                        {% if cursos_list %}
                             <div class="dataTable_wrapper">
                                 <table class="table table-hover" id="dataTables-example">
                                     <thead>
@@ -26,11 +26,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for disciplina in disciplinas_list %}
+                                        {% for curso in cursos_list %}
                                         <tr>
-                                            <td>{{ disciplina.titulo }}</td>
-                                            <td class="center"><a href={% url "programacao:aluno_disciplina" disciplina.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="visualizar">Visualizar</button></a></td>
-                                            <td class="center"><a href={% url "programacao:aluno_disciplina_desinscrever" disciplina.id %}><button type="button" class="btn btn-sm btn-danger" name="acao" value="desinscrever">Desinscrever</button></a></td>
+                                            <td>{{ curso.titulo }}</td>
+                                            <td class="center"><a href={% url "programacao:aluno_curso" curso.id %}><button type="button" class="btn btn-sm btn-primary" name="acao" value="visualizar">Visualizar</button></a></td>
+                                            <td class="center"><a href={% url "programacao:aluno_curso_desinscrever" curso.id %}><button type="button" class="btn btn-sm btn-danger" name="acao" value="desinscrever">Desinscrever</button></a></td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -39,7 +39,7 @@
                             <!-- /.table-responsive -->
                         {% else %}
                             <div class="alert alert-info">
-                                Nenhuma disciplina cadastrada!
+                                Nenhum curso cadastrado!
                             </div>
                                    
                         {% endif %}

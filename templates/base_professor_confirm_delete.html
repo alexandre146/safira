@@ -1,0 +1,38 @@
+{% extends "base_professor.html" %}
+
+{% load staticfiles %}
+
+{% block main %}
+    <div id="wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-red">
+                    <form method="post">
+                        <div class="panel-heading">
+                            {% block title_delete %}
+                            {% endblock %}
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="alert alert-danger">
+                            {% block body_delete %}
+                            {% endblock %}
+                            </div>
+                        </div>
+                        <!-- .panel-body -->
+                        <div class="panel-footer">
+                            {% block footer_delete %}
+                            {% endblock %}
+                        </div>
+                        <!-- .panel-footer -->
+                    </form>
+                </div>
+                <!-- /.col-lg-6 -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /#wrapper -->
+
+{% endblock %}

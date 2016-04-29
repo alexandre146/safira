@@ -29,11 +29,16 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-TEMPLATE_DIRS = (
-    '/home/alexandre/git/safira/templates',
-    '/home/alexandre/git/safira/templates/mathema',
-    '/home/alexandre/git/safira/templates/programacao',
+TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'templates/mathema'),
+                 os.path.join(BASE_DIR, 'templates/programacao'),
 )
+
+# TEMPLATE_DIRS = (
+#     '/home/alexandre/git/safira/templates',
+#     '/home/alexandre/git/safira/templates/mathema',
+#     '/home/alexandre/git/safira/templates/programacao',
+# )
 
 INSTALLED_APPS = (
     'django.contrib.admin',

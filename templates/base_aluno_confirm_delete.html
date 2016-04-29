@@ -1,0 +1,32 @@
+{% extends "base_aluno.html" %}
+
+{% load staticfiles %}
+
+
+{% block main %}
+    <div id="wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        {% block title %}
+                        {% endblock %}
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="alert alert-danger">
+                            {% block description %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.col-lg-6 -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /#wrapper -->
+
+{% endblock %}

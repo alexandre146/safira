@@ -1,5 +1,19 @@
-<form method="post">
-    {% csrf_token %}
-    Are you sure you want to delete "{{ object }}" ?
-    <input type="submit" value="Submit" />
-</form>
+{% extends "base_aluno_confirm_delete.html" %}
+
+{% load staticfiles %}
+
+{% block title_delete %}
+Excluir aluno
+{% endblock %}
+
+{% block body_delete %}
+    <div class="alert alert-danger">
+        {% csrf_token %}
+        Você deseja realmente excluir o aluno "{{ aluno.nome }}"?
+    </div>
+{% endblock %}
+
+{% block footer_delete %}
+    <a href=""><button type="button" class="btn btn-primary">Cancelar</button></a>
+    <button type="submit" class="btn btn-danger">Excluir</button>
+{% endblock %}

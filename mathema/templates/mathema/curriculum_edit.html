@@ -1,4 +1,4 @@
-{% extends "base_professor.html" %}
+{% extends "base_mathema.html" %}
 
 {% load bootstrap %}
 
@@ -27,8 +27,13 @@
                     </div>
                     <!-- /.panel-body -->
                     <div class="panel-footer">
+                    {% if curso %}
+                        <button type="submit" class="btn btn-sm btn-success" name="salvar_curso_curriculum"><i class="fa fa-check"></i> Salvar</button>
+                        <a href="{% url "programacao:professor_curso_edit" curso.id %}"><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-arrow-left"></i> Voltar</button></a>
+                    {% else %}
                         <button type="submit" class="btn btn-sm btn-success" name="salvar_curriculum"><i class="fa fa-check"></i> Salvar</button>
                         <a href="{% url "mathema:curriculum_list" %}"><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-arrow-left"></i> Voltar</button></a>
+                    {% endif %}
                     </div>
                     <!-- /.panel-footer -->
                 </form>
@@ -170,7 +175,7 @@
                                                                             <input class=" form-control" id="id" name="id" type="hidden" value="{{ atividade.id }}"/>
                                                                             <input class=" form-control" id="id_topico" name="id_topico" type="hidden" value="{{ topico.id }}"/>
                                                                             {{ atividade.get_edit_form|bootstrap }}
-                                                                            {{ topico_atividade_form|bootstrap }}
+                                                                            {{ atividade.get_topico_atividade_edit_form|bootstrap }}
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button type="submit" class="btn btn-sm btn-success" name="salvar_atividade">Salvar</button>
@@ -195,161 +200,279 @@
                                                                     <!-- /.panel-heading -->
                                                                     <div id="atividade{{ atividade.id }}" class="panel-collapse collapse">
                                                                         <div class="panel-body">
+                                                                            <!-- Suportes, questionarios e exercicios praticos tabs -->
+                                                                            <!-- Nav tabs -->
+                                                                            <ul class="nav nav-tabs">
+                                                                                <li class="active"><a href="#suportes" data-toggle="tab">Suportes</a></li>
+                                                                                <li><a href="#questionarios" data-toggle="tab">Questionários</a></li>
+                                                                                <li><a href="#exercicios" data-toggle="tab">Exercícios práticos</a></li>
+                                                                            </ul>
+                                                                            <!-- Tab panes -->
+                                                                            <div class="tab-content">
 <!-- ######################### -->
 <!-- # Suportes da atividade # -->
 <!-- ######################### -->
-                                                                            <br>
-                                                                            {% if atividade.get_suportes %}
-                                                                            {% for suporte in atividade.get_suportes %}
-                                                                            
-                                                                            <!-- Modal do suporte {{suporte.id}} - inicio-->
-                                                                            <div class="modal fade" id="modalSuporte{{suporte.id}}" tabindex="-1" role="dialog" aria-labelledby="modalLabelSuporte{{suporte.id}}" aria-hidden="true">
-                                                                                <div class="modal-dialog">
-                                                                                    <div class="modal-content">
-                                                                                        <!-- Detalhes do suporte -->
-                                                                                        <form method="post" enctype="multipart/form-data">
-                                                                                        {% csrf_token %}
-                                                                                            <div class="modal-header">
-                                                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                                                                <h4 class="modal-title" id="modalLabelSuporte{{suporte.id}}"> {{ suporte.titulo }} </h4>
+                                                                                <div class="tab-pane fade in active" id="suportes">
+                                                                                    <br>
+                                                                                    {% if atividade.get_suportes %}
+                                                                                    {% for suporte in atividade.get_suportes %}
+                                                                                    
+                                                                                    <!-- Modal do suporte {{suporte.id}} - inicio-->
+                                                                                    <div class="modal fade" id="modalSuporte{{suporte.id}}" tabindex="-1" role="dialog" aria-labelledby="modalLabelSuporte{{suporte.id}}" aria-hidden="true">
+                                                                                        <div class="modal-dialog">
+                                                                                            <div class="modal-content">
+                                                                                                <!-- Detalhes do suporte -->
+                                                                                                <form method="post" enctype="multipart/form-data">
+                                                                                                {% csrf_token %}
+                                                                                                    <div class="modal-header">
+                                                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                                                        <h4 class="modal-title" id="modalLabelSuporte{{suporte.id}}"> {{ suporte.titulo }} </h4>
+                                                                                                    </div>
+                                                                                                    <div class="modal-body">
+                                                                                                        <input class=" form-control" id="id" name="id" type="hidden" value="{{ suporte.id }}"/>
+                                                                                                        <input class=" form-control" id="id_atividade" name="id_atividade" type="hidden" value="{{atividade.id}}"/>
+                                                                                                        {{ suporte.get_edit_form|bootstrap }}
+                                                                                                        {{ suporte.get_atividade_suporte_edit_form|bootstrap }}
+                                                                                                    </div>
+                                                                                                    <div class="modal-footer">
+                                                                                                        <button type="submit" class="btn btn-sm btn-success" name="salvar_suporte_atividade">Salvar</button>
+                                                                                                    </div>
+                                                                                                </form>
                                                                                             </div>
-                                                                                            <div class="modal-body">
-                                                                                                <input class=" form-control" id="id" name="id" type="hidden" value="{{ suporte.id }}"/>
-                                                                                                {{ suporte.get_edit_form|bootstrap }}
-                                                                                                {{ atividade_suporte_form|bootstrap }}
-                                                                                            </div>
-                                                                                            <div class="modal-footer">
-                                                                                                <button type="submit" class="btn btn-sm btn-success" name="salvar_suporte">Salvar</button>
-                                                                                            </div>
-                                                                                        </form>
-                                                                                    </div>
-                                                                                    <!-- /.modal-content -->
-                                                                                </div>
-                                                                                <!-- /.modal-dialog -->
-                                                                            </div>
-                                                                            <!-- /.modal -->
-                                                                            <!-- Modal do suporte {{suporte.id}} - final -->
-                                                                            
-                                                                            <div class="col-lg-12">
-                                                                                <div class="panel-group" id="accordionSuporte">
-                                                                                    <div class="panel panel-primary">
-                                                                                        <div class="panel-heading">
-                                                                                            <h4 class="panel-title">
-                                                                                                <a data-toggle="collapse" data-parent="#accordionSuporte" href="#suporte{{ suporte.id }}">{{ suporte.titulo }} ({{ suporte.tipo }})</a>
-                                                                                            </h4>
+                                                                                            <!-- /.modal-content -->
                                                                                         </div>
-                                                                                        <!-- /.panel-heading -->
-                                                                                        <div id="suporte{{ suporte.id }}" class="panel-collapse collapse">
-                                                                                            <div class="panel-body">
-                                                                                                {% if suporte.arquivo %}
-                                                                                                    <a href="{{ MEDIA_URL }}{{ suporte.arquivo }}" target="blank"><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-download"></i> Download</button></a>
-                                                                                                {% endif %}
-                                                                                                {% if suporte.link %}
-                                                                                                    <a href="{{ suporte.link }}" target="blank"><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-play"></i> Play</button></a>
-                                                                                                {% endif %}
-                                                                                            </div>
-                                                                                            <!-- panel-body -->
-                                                                                        </div>
-                                                                                        <!-- panel-collapse -->
-                                                                                        <div class="panel-footer">
-                                                                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modalSuporte{{suporte.id}}"><i class="fa fa-pencil"></i> Editar</button>
-                                                                                            <a href="{% url "mathema:curriculum_suporte_atividade_delete" curriculum.id atividade.id suporte.id %}"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-times"></i> Excluir</button></a>
-                                                                                        </div>
-                                                                                        <!-- panel-footer -->
+                                                                                        <!-- /.modal-dialog -->
                                                                                     </div>
-                                                                                    <!-- panel-primary -->
-                                                                                </div>
-                                                                                <!-- panel-group -->
-                                                                            </div>
-                                                                            <!-- col-lg-12 -->
-                                                                            
-                                                                            {% endfor %}
-                                                                            {% endif %}
-                                                                            <br>
-                                                                            <!-- Modal de um novo suporte (em atividade) - inicio-->
-                                                                            <div class="modal fade" id="modalSuporteAtividadeNovo{{atividade.id}}" tabindex="-1" role="dialog" aria-labelledby="modalLabelSuporteAtividadeNovo{{atividade.id}}" aria-hidden="true">
-                                                                                <div class="modal-dialog">
-                                                                                    <div class="modal-content">
-                                                                                        <!-- Detalhes da suporte -->
-                                                                                        <form method="post" enctype="multipart/form-data">
-                                                                                        {% csrf_token %}
-                                                                                            <div class="modal-header">
-                                                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                                                                <h4 class="modal-title" id="modalLabelSuporteAtividadeNovo{{atividade.id}}"> Novo suporte </h4>
-                                                                                            </div>
-                                                                                            <div class="modal-body">
-                                                                                                <input class=" form-control" id="id_atividade" name="id_atividade" type="hidden" value="{{atividade.id}}"/>
-                                                                                                {{ suporte_novo_form|bootstrap }}
-                                                                                                {{ atividade_suporte_form|bootstrap }}
-                                                                                            </div>
-                                                                                            <div class="modal-footer">
-                                                                                                <button type="submit" class="btn btn-sm btn-success" name="salvar_novo_suporte_atividade">Salvar</button>
-                                                                                                <input type='reset' class="btn btn-sm btn-primary" value='Limpar' name='reset'>
-                                                                                            </div>
-                                                                                        </form>
-                                                                                    </div>
-                                                                                    <!-- /.modal-content -->
-                                                                                </div>
-                                                                                <!-- /.modal-dialog -->
-                                                                            </div>
-                                                                            <!-- /.modal -->
-                                                                            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalSuporteAtividadeNovo{{atividade.id}}"><i class="fa fa-plus"></i> Novo suporte</button>
-                                                                            <!-- Modal de um novo suporte (em atividade) - final -->
-
-                                                                            <!-- Modal para adicionar um suporte existente - inicio-->
-                                                                            <div class="modal fade" id="modalAddSuporteAtividade" tabindex="-1" role="dialog" aria-labelledby="modalLabelAddSuporteAtividade" aria-hidden="true">
-                                                                                <div class="modal-dialog">
-                                                                                    <div class="modal-content">
-                                                                                        <!-- Detalhes do suporte -->
-                                                                                        <form method="post" enctype="multipart/form-data">
-                                                                                        {% csrf_token %}
-                                                                                            <input class=" form-control" id="id_atividade" name="id_atividade" type="hidden" value="{{ atividade.id }}"/>
-                                                                                            <div class="modal-header">
-                                                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                                                                <h4 class="modal-title" id="modalLabelAddSuporteAtividade"> Adicionar suporte </h4>
-                                                                                            </div>
-                                                                                            <div class="modal-body">
-                                                                                                <div class="form-group">
-                                                                                                    <label>Meus suportes</label>
-                                                                                                    {% if atividade.add_meus_suportes %}
-                                                                                                        <select name="id_meu_suporte_atividade" class="form-control" size="3">
-                                                                                                        {% for suporte in atividade.add_meus_suportes %}
-                                                                                                            <option value="{{suporte.id}}">{{suporte.titulo}}</option>
-                                                                                                        {% endfor %}
-                                                                                                        </select>
-                                                                                                    {% else %}
-                                                                                                        Nenhum suporte sob sua autoria!
-                                                                                                    {% endif %}
+                                                                                    <!-- /.modal -->
+                                                                                    <!-- Modal do suporte {{suporte.id}} - final -->
+                                                                                    
+                                                                                    <div class="col-lg-12">
+                                                                                        <div class="panel-group" id="accordionSuporte">
+                                                                                            <div class="panel panel-primary">
+                                                                                                <div class="panel-heading">
+                                                                                                    <h4 class="panel-title">
+                                                                                                        <a data-toggle="collapse" data-parent="#accordionSuporte" href="#suporte{{ suporte.id }}">{{ suporte.titulo }} ({{ suporte.tipo }})</a>
+                                                                                                    </h4>
                                                                                                 </div>
-                                                                                                <div class="form-group">
-                                                                                                    <label>Outros suportes</label>
-                                                                                                    {% if atividade.add_outros_suportes %}
-                                                                                                        <select name="id_outro_suporte_atividade" class="form-control" size="3">
-                                                                                                        {% for suporte in atividade.add_outros_suportes %}
-                                                                                                            <option value="{{suporte.id}}">{{suporte.titulo}}</option>
-                                                                                                        {% endfor %}
-                                                                                                        </select>
-                                                                                                    {% else %}
-                                                                                                        Nenhum suporte cadastrado!
-                                                                                                    {% endif %}
+                                                                                                <!-- /.panel-heading -->
+                                                                                                <div id="suporte{{ suporte.id }}" class="panel-collapse collapse">
+                                                                                                    <div class="panel-body">
+                                                                                                        {% if suporte.arquivo %}
+                                                                                                            <a href="{{ MEDIA_URL }}{{ suporte.arquivo }}" target="blank"><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-download"></i> Download</button></a>
+                                                                                                        {% endif %}
+                                                                                                        {% if suporte.link %}
+                                                                                                            <a href="{{ suporte.link }}" target="blank"><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-play"></i> Play</button></a>
+                                                                                                        {% endif %}
+                                                                                                    </div>
+                                                                                                    <!-- panel-body -->
                                                                                                 </div>
+                                                                                                <!-- panel-collapse -->
+                                                                                                <div class="panel-footer">
+                                                                                                    <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modalSuporte{{suporte.id}}"><i class="fa fa-pencil"></i> Editar</button>
+                                                                                                    <a href="{% url "mathema:curriculum_suporte_atividade_delete" curriculum.id atividade.id suporte.id %}"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-times"></i> Excluir</button></a>
+                                                                                                </div>
+                                                                                                <!-- panel-footer -->
                                                                                             </div>
-                                                                                            <div class="modal-footer">
-                                                                                                <button type="submit" class="btn btn-sm btn-primary" name="adicionar_suporte_atividade">Adicionar</button>
-                                                                                            </div>
-                                                                                        </form>
+                                                                                            <!-- panel-primary -->
+                                                                                        </div>
+                                                                                        <!-- panel-group -->
                                                                                     </div>
-                                                                                    <!-- /.modal-content -->
-                                                                                </div>
-                                                                                <!-- /.modal-dialog -->
-                                                                            </div>
-                                                                            <!-- /.modal -->
-                                                                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalAddSuporteAtividade"><i class="fa fa-plus"></i> Adicionar suporte</button>
-                                                                            <!-- Modal para adicionar um suporte existente - final -->
+                                                                                    <!-- col-lg-12 -->
+                                                                                    
+                                                                                    {% endfor %}
+                                                                                    {% endif %}
+                                                                                    <br>
+                                                                                    <!-- Modal de um novo suporte (em atividade) - inicio-->
+                                                                                    <div class="modal fade" id="modalSuporteAtividadeNovo{{atividade.id}}" tabindex="-1" role="dialog" aria-labelledby="modalLabelSuporteAtividadeNovo{{atividade.id}}" aria-hidden="true">
+                                                                                        <div class="modal-dialog">
+                                                                                            <div class="modal-content">
+                                                                                                <!-- Detalhes da suporte -->
+                                                                                                <form method="post" enctype="multipart/form-data">
+                                                                                                {% csrf_token %}
+                                                                                                    <div class="modal-header">
+                                                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                                                        <h4 class="modal-title" id="modalLabelSuporteAtividadeNovo{{atividade.id}}"> Novo suporte </h4>
+                                                                                                    </div>
+                                                                                                    <div class="modal-body">
+                                                                                                        <input class=" form-control" id="id_atividade" name="id_atividade" type="hidden" value="{{atividade.id}}"/>
+                                                                                                        {{ suporte_novo_form|bootstrap }}
+                                                                                                        {{ atividade_suporte_form|bootstrap }}
+                                                                                                    </div>
+                                                                                                    <div class="modal-footer">
+                                                                                                        <button type="submit" class="btn btn-sm btn-success" name="salvar_novo_suporte_atividade">Salvar</button>
+                                                                                                        <input type='reset' class="btn btn-sm btn-primary" value='Limpar' name='reset'>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                            <!-- /.modal-content -->
+                                                                                        </div>
+                                                                                        <!-- /.modal-dialog -->
+                                                                                    </div>
+                                                                                    <!-- /.modal -->
+                                                                                    <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalSuporteAtividadeNovo{{atividade.id}}"><i class="fa fa-plus"></i> Novo suporte</button>
+                                                                                    <!-- Modal de um novo suporte (em atividade) - final -->
+        
+                                                                                    <!-- Modal para adicionar um suporte existente - inicio-->
+                                                                                    <div class="modal fade" id="modalAddSuporteAtividade" tabindex="-1" role="dialog" aria-labelledby="modalLabelAddSuporteAtividade" aria-hidden="true">
+                                                                                        <div class="modal-dialog">
+                                                                                            <div class="modal-content">
+                                                                                                <!-- Detalhes do suporte -->
+                                                                                                <form method="post" enctype="multipart/form-data">
+                                                                                                {% csrf_token %}
+                                                                                                    <input class=" form-control" id="id_atividade" name="id_atividade" type="hidden" value="{{ atividade.id }}"/>
+                                                                                                    <div class="modal-header">
+                                                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                                                        <h4 class="modal-title" id="modalLabelAddSuporteAtividade"> Adicionar suporte </h4>
+                                                                                                    </div>
+                                                                                                    <div class="modal-body">
+                                                                                                        <div class="form-group">
+                                                                                                            <label>Meus suportes</label>
+                                                                                                            {% if atividade.add_meus_suportes %}
+                                                                                                                <select name="id_meu_suporte_atividade" class="form-control" size="3">
+                                                                                                                {% for suporte in atividade.add_meus_suportes %}
+                                                                                                                    <option value="{{suporte.id}}">{{suporte.titulo}}</option>
+                                                                                                                {% endfor %}
+                                                                                                                </select>
+                                                                                                            {% else %}
+                                                                                                                Nenhum suporte sob sua autoria!
+                                                                                                            {% endif %}
+                                                                                                        </div>
+                                                                                                        <div class="form-group">
+                                                                                                            <label>Outros suportes</label>
+                                                                                                            {% if atividade.add_outros_suportes %}
+                                                                                                                <select name="id_outro_suporte_atividade" class="form-control" size="3">
+                                                                                                                {% for suporte in atividade.add_outros_suportes %}
+                                                                                                                    <option value="{{suporte.id}}">{{suporte.titulo}}</option>
+                                                                                                                {% endfor %}
+                                                                                                                </select>
+                                                                                                            {% else %}
+                                                                                                                Nenhum suporte cadastrado!
+                                                                                                            {% endif %}
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="modal-footer">
+                                                                                                        <button type="submit" class="btn btn-sm btn-primary" name="adicionar_suporte_atividade">Adicionar</button>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                            <!-- /.modal-content -->
+                                                                                        </div>
+                                                                                        <!-- /.modal-dialog -->
+                                                                                    </div>
+                                                                                    <!-- /.modal -->
+                                                                                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalAddSuporteAtividade"><i class="fa fa-plus"></i> Adicionar suporte</button>
+                                                                                    <!-- Modal para adicionar um suporte existente - final -->
 
+                                                                                </div>
+                                                                                <!-- /.tab-pane suporte -->
+<!-- ################ -->
+<!-- # Questionario # -->
+<!-- ################ -->
+                                                                                <div class="tab-pane fade" id="questionarios">
+                                                                                questionario
+                                                                                </div>
+                                                                                <!-- /.tab-pane questionario -->
+<!-- ############## -->
+<!-- # Exercicio  # -->
+<!-- ############## -->
+                                                                                <div class="tab-pane fade" id="exercicios">
+                                                                                    {% if atividade.get_exercicios %}
+                                                                                    {% for exercicio in atividade.get_exercicios %}
+                                                                                    <!-- Modal do suporte {{suporte.id}} - inicio-->
+                                                                                    <div class="modal fade" id="modalExercicio{{exercicio.id}}" tabindex="-1" role="dialog" aria-labelledby="modalLabelExercicio{{exercicio.id}}" aria-hidden="true">
+                                                                                        <div class="modal-dialog">
+                                                                                            <div class="modal-content">
+                                                                                                <!-- Detalhes do suporte -->
+                                                                                                <form method="post" enctype="multipart/form-data">
+                                                                                                {% csrf_token %}
+                                                                                                    <div class="modal-header">
+                                                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                                                        <h4 class="modal-title" id="modalLabelExercicio{{exercicio.id}}"> {{ exercicio.titulo }} </h4>
+                                                                                                    </div>
+                                                                                                    <div class="modal-body">
+                                                                                                        <input class=" form-control" id="id" name="id" type="hidden" value="{{ exercicio.id }}"/>
+                                                                                                        {{ exercicio.get_edit_form|bootstrap }}
+                                                                                                    </div>
+                                                                                                    <div class="modal-footer">
+                                                                                                        <button type="submit" class="btn btn-sm btn-success" name="salvar_exercicio">Salvar</button>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                            <!-- /.modal-content -->
+                                                                                        </div>
+                                                                                        <!-- /.modal-dialog -->
+                                                                                    </div>
+                                                                                    <!-- /.modal -->
+                                                                                    <!-- Modal do suporte {{suporte.id}} - final -->
+                                                                                    <br>
+                                                                                    <div class="col-lg-12">
+                                                                                        <div class="panel-group" id="accordionExercicio">
+                                                                                            <div class="panel panel-primary">
+                                                                                                <div class="panel-heading">
+                                                                                                    <h4 class="panel-title">
+                                                                                                        <a data-toggle="collapse" data-parent="#accordionExercicio" href="#exercicio{{ exercicio.id }}">{{ exercicio.titulo }}</a>
+                                                                                                    </h4>
+                                                                                                </div>
+                                                                                                <!-- /.panel-heading -->
+                                                                                                <div id="exercicio{{ exercicio.id }}" class="panel-collapse collapse">
+                                                                                                    <div class="panel-body">
+                                                                                                    {{ exercicio.enunciado }} <br>
+                                                                                                    {{ exercicio.arquivoTeste }} <br>
+                                                                                                    {{ exercicio.arquivoSolucao }} <br>
+                                                                                                    </div>
+                                                                                                    <!-- panel-body -->
+                                                                                                </div>
+                                                                                                <!-- panel-collapse -->
+                                                                                                <div class="panel-footer">
+                                                                                                    <a href={% url "programacao:professor_curso_atividade_exercicio_avaliacoes" curriculum.id exercicio.id %}><button type="button" class="btn btn-sm btn-primary">Executar avaliações</button></a>
+                                                                                                    <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modalExercicio{{exercicio.id}}"><i class="fa fa-pencil"></i> Editar</button>
+                                                                                                    <a href={% url "programacao:professor_atividade_exercicio_delete" exercicio.id %}><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-times"></i>Excluir</button></a>
+                                                                                                </div>
+                                                                                                <!-- panel-footer -->
+                                                                                            </div>
+                                                                                            <!-- panel-primary -->
+                                                                                        </div>
+                                                                                        <!-- panel-group -->
+                                                                                    </div>
+                                                                                    <!-- col-lg-12 -->
+                                                                                    {% endfor %}
+                                                                                    {% endif %}
+                                                                                    <br>
+                                                                                    <!-- Modal de um novo exercício (em atividade) - inicio-->
+                                                                                    <div class="modal fade" id="modalExercicioNovo{{atividade.id}}" tabindex="-1" role="dialog" aria-labelledby="modalLabelExercicioNovo{{atividade.id}}" aria-hidden="true">
+                                                                                        <div class="modal-dialog">
+                                                                                            <div class="modal-content">
+                                                                                                <!-- Detalhes da suporte -->
+                                                                                                <form method="post" enctype="multipart/form-data">
+                                                                                                {% csrf_token %}
+                                                                                                    <div class="modal-header">
+                                                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                                                        <h4 class="modal-title" id="modalLabelExercicioNovo{{atividade.id}}"> Novo exercíco prático </h4>
+                                                                                                    </div>
+                                                                                                    <div class="modal-body">
+                                                                                                        <input class=" form-control" id="id_atividade" name="id_atividade" type="hidden" value="{{atividade.id}}"/>
+                                                                                                        {{ exercicio_novo_form|bootstrap }}
+                                                                                                    </div>
+                                                                                                    <div class="modal-footer">
+                                                                                                        <button type="submit" class="btn btn-sm btn-success" name="salvar_novo_exercicio">Salvar</button>
+                                                                                                        <input type='reset' class="btn btn-sm btn-primary" value='Limpar' name='reset'>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                            <!-- /.modal-content -->
+                                                                                        </div>
+                                                                                        <!-- /.modal-dialog -->
+                                                                                    </div>
+                                                                                    <!-- /.modal -->
+                                                                                    <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalExercicioNovo{{atividade.id}}"><i class="fa fa-plus"></i> Novo exercício</button>
+                                                                                    <!-- Modal de um novo exercício (em atividade) - final -->
+
+                                                                                </div>
+                                                                                <!-- /.tab-pane exercicio -->
+                                                                            </div>                                                                        
+                                                                            <!-- /.tab-content -->
                                                                         </div>
                                                                         <!-- panel-body -->
-                                                                        
                                                                     </div>
                                                                     <!-- panel-collapse -->
                                                                     <div class="panel-footer">
@@ -469,9 +592,10 @@
                                                                             <h4 class="modal-title" id="modalLabelSuporte{{suporte.id}}"> {{ suporte.titulo }} </h4>
                                                                         </div>
                                                                         <div class="modal-body">
+                                                                        <input class=" form-control" id="id_topico" name="id_topico" type="hidden" value="{{ topico.id }}"/>
                                                                             <input class=" form-control" id="id" name="id" type="hidden" value="{{ suporte.id }}"/>
                                                                             {{ suporte.get_edit_form|bootstrap }}
-                                                                            {{ topico_suporte_form|bootstrap }}
+                                                                            {{ suporte.get_topico_suporte_edit_form|bootstrap }}
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button type="submit" class="btn btn-sm btn-success" name="salvar_suporte">Salvar</button>
@@ -694,8 +818,10 @@
             <!-- /.modal-dialog -->
         </div>
         <!-- /.modal -->
-        <button class="btn btn-success" data-toggle="modal" data-target="#modalObjetivoNovo"><i class="fa fa-plus"></i> Novo Objetivo</button>
+        <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalObjetivoNovo"><i class="fa fa-plus"></i> Novo objetivo</button>
         <!-- Modal de um novo objetivo - final -->
+        <br>
+        <br>
     </div>
     <!-- /.col-lg-12 -->
 </div>

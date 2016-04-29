@@ -8,6 +8,8 @@ from mathema import views
 
 
 urlpatterns = patterns('',
+    url(r'^$', views.index, name='index'),
+    url(r'^sair/$', views.sair, name='sair'),
     url(r'^curriculum/list', views.curriculum_list, name='curriculum_list'),
     url(r'^curriculum/(?P<pk>\d+)/edit', views.curriculum_edit, name='curriculum_edit'),
     url(r'^curriculum/(?P<pk>\d+)/delete', views.curriculum_delete, name='curriculum_delete'),

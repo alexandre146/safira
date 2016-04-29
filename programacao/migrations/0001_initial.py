@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from django.conf import settings
 import programacao.models
+import django.db.models.deletion
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -50,22 +51,12 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='AtividadeProgramacao',
-            fields=[
-                ('atividade_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='mathema.Atividade')),
-                ('deadline', models.DateTimeField(null=True, blank=True)),
-            ],
-            options={
-            },
-            bases=('mathema.atividade',),
-        ),
-        migrations.CreateModel(
             name='Curso',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('titulo', models.CharField(max_length=200)),
                 ('alunos', models.ManyToManyField(to='programacao.Aluno', null=True, through='programacao.AlunoCurso', blank=True)),
-                ('curriculum', models.ForeignKey(blank=True, to='mathema.Curriculum', null=True)),
+                ('curriculum', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='mathema.Curriculum', null=True)),
             ],
             options={
             },
@@ -75,37 +66,15 @@ class Migration(migrations.Migration):
             name='ExercicioPratico',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('titulo', models.CharField(max_length=200)),
                 ('enunciado', models.CharField(max_length=200)),
                 ('arquivoTeste', models.FileField(upload_to=programacao.models.user_teste_directory_path, null=True, verbose_name=b'Arquivo de testes unitarios', blank=True)),
                 ('arquivoSolucao', models.FileField(upload_to=programacao.models.user_teste_directory_path, null=True, verbose_name=b'Arquivo da solucao de referencia', blank=True)),
-                ('atividade', models.ForeignKey(to='programacao.AtividadeProgramacao')),
+                ('atividade', models.ForeignKey(to='mathema.Atividade')),
             ],
             options={
             },
             bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='Interacao',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('titulo', models.CharField(max_length=200)),
-                ('ordem', models.IntegerField(null=True, blank=True)),
-                ('curso', models.ForeignKey(to='programacao.Curso')),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='ObjetivoProgramacao',
-            fields=[
-                ('objetivo_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='mathema.Objetivo')),
-                ('curriculum_temp', models.ForeignKey(to='mathema.Curriculum')),
-                ('interacao', models.ForeignKey(blank=True, to='programacao.Interacao', null=True)),
-            ],
-            options={
-            },
-            bases=('mathema.objetivo',),
         ),
         migrations.CreateModel(
             name='Professor',
@@ -119,36 +88,10 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.CreateModel(
-            name='SuporteProgramacao',
-            fields=[
-                ('suporte_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='mathema.Suporte')),
-                ('interacao', models.ForeignKey(blank=True, to='programacao.Interacao', null=True)),
-            ],
-            options={
-            },
-            bases=('mathema.suporte',),
-        ),
-        migrations.CreateModel(
-            name='TopicoProgramacao',
-            fields=[
-                ('topico_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='mathema.Topico')),
-                ('interacao', models.ForeignKey(blank=True, to='programacao.Interacao', null=True)),
-            ],
-            options={
-            },
-            bases=('mathema.topico',),
-        ),
         migrations.AddField(
             model_name='curso',
             name='professor',
             field=models.ForeignKey(to='programacao.Professor'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='atividadeprogramacao',
-            name='interacao',
-            field=models.ForeignKey(blank=True, to='programacao.Interacao', null=True),
             preserve_default=True,
         ),
         migrations.AddField(

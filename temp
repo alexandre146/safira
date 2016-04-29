@@ -267,3 +267,601 @@ def objetivo_update(request, pk,
     url(r'^objetivo/$', views.objetivo_list, name='objetivo_list'),
     url(r'^objetivo/new$', views.objetivo_create, name='objetivo_new'),
     url(r'^objetivo/edit/(?P<pk>\d+)$', views.objetivo_update, name='objetivo_edit'),
+    
+def professor_curso_interacao(request, pk1, template_name='programacao/professor_curso_interacao_edit.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+
+    form = InteracaoForm(request.POST or None)    
+    if request.method=='POST':
+        if form.is_valid():
+            interacao = form.save(commit = False)
+            interacao.curso = curso
+            interacao.save()
+            return redirect('programacao:professor_curso_edit', pk=pk1)
+   
+    data = {}
+    data['form'] = form
+    data['curso'] = curso
+    return render(request, template_name, data)
+
+
+def professor_curso_interacao_edit(request, pk1, pk2, template_name='programacao/professor_curso_interacao_edit.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    interacao = get_object_or_404(Interacao, pk=pk2)
+
+    form = InteracaoForm(request.POST or None, instance=interacao)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_edit', pk=pk1)
+        else:
+            form = InteracaoForm(request.POST or None) 
+   
+    data = {}
+    data['form'] = form
+    data['curso'] = curso
+    return render(request, template_name, data)
+
+
+def professor_curso_interacao_delete(request, pk1, pk2, template_name='programacao/professor_curso_confirm_delete.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    interacao = get_object_or_404(Interacao, pk=pk2)
+    
+    if request.method=='POST':
+        interacao.delete()
+        return redirect('programacao:professor_curso_edit', pk=pk1)
+    
+    data = {}
+    data['curso'] = curso
+    return render(request, template_name, data)
+    
+    url(r'^professor/curso/(?P<pk1>\d+)/interacao/$', views.professor_curso_interacao, name='professor_curso_interacao'),
+    url(r'^professor/curso/(?P<pk1>\d+)/interacao/edit/(?P<pk2>\d+)/$', views.professor_curso_interacao_edit, name='professor_curso_interacao_edit'),
+    url(r'^professor/curso/(?P<pk1>\d+)/interacao/delete/(?P<pk2>\d+)/$', views.professor_curso_interacao_delete, name='professor_curso_interacao_delete'),
+
+def professor_curriculum(request, template_name='programacao/professor_curriculum_edit.html'):
+    form = CurriculumForm(request.POST or None)
+    if request.method=='POST':
+        if form.is_valid():
+#             professor = Professor.objects.get(user_id=request.user.id) AUTOR
+            form.save()
+            return redirect('programacao:professor_curriculum')
+        else : 
+            form = CurriculumForm()
+
+    data = {}
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_curriculum_add(request, pk1, template_name='programacao/professor_curriculum_edit.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    
+    form = CurriculumForm(request.POST or None)
+    if request.method=='POST':
+        if form.is_valid():
+#             professor = Professor.objects.get(user_id=request.user.id) AUTOR
+            curriculum = form.save() 
+            
+            curso.curriculum_id = curriculum.id
+            curso.curriculum = curriculum
+            curso.save()
+
+            return redirect('programacao:professor_curso_edit', pk=pk1)
+        else : 
+            form = CurriculumForm()
+
+    data = {}
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_curriculum_edit(request, pk, template_name='programacao/professor_curriculum_edit.html'):
+    curriculum = get_object_or_404(Curriculum, pk=pk)
+    
+    form = CurriculumForm(request.POST or None, instance=curriculum)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curriculum_edit', pk=pk)
+        else : 
+            form = CurriculumForm()
+
+    data = {}
+    data['form'] = form
+    data['curriculum'] = curriculum
+    return render(request, template_name, data)
+
+
+def professor_curso_curriculum(request, pk, template_name='programacao/professor_curso_curriculum.html'):   
+    curso = get_object_or_404(Curso, pk=pk)
+    curriculum_list = Curriculum.objects.all()
+
+    if request.method=='POST':
+        id_curriculum = request.POST.get('curriculum')
+        curriculum = Curriculum.objects.get(id=id_curriculum)
+
+        objetivos_list = ObjetivoProgramacao.objects.filter(curriculum_id=curriculum.id).order_by('ordem')
+        topicos_list = []
+        atividades_list = []
+        suportes_list = []
+        
+        for obj in objetivos_list :
+            topicos_list.extend(list(TopicoProgramacao.objects.filter(objetivo_id=obj.id)))
+    
+        for obj in topicos_list :
+            suportes_list.extend(list(obj.suportes.all()))
+            tas = TopicoAtividade.objects.filter(topico_id=obj.id)
+            for ta in tas :
+                atividades_list.extend(list(AtividadeProgramacao.objects.filter(id=ta.atividade.id)))
+        
+        for obj in atividades_list :
+            suportes_list.extend(list(obj.suportes.all()))
+
+        data = {}
+        data['curso'] = curso
+        data['curriculum_list'] = curriculum_list
+        data['curriculum'] = curriculum
+        data['objetivos_list'] = objetivos_list
+        data['topicos_list'] = topicos_list
+        data['atividades_list'] = atividades_list
+        data['suportes_list'] = suportes_list
+        return render(request, template_name, data)
+
+    data = {}
+    data['curso'] = curso
+    data['curriculum_list'] = curriculum_list
+    return render(request, template_name, data)
+
+
+def professor_curso_associar_curriculum(request, pk1, pk2, template_name='programacao/professor_curso_curriculum_edit.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)
+    
+    curso.curriculum_id = curriculum.id
+    curso.curriculum = curriculum
+    curso.save()
+
+    return redirect('programacao:professor_curso_edit', pk=pk1)
+
+
+def professor_curso_curriculum_edit(request, pk1, pk2, template_name='programacao/professor_curso_curriculum_edit.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)
+   
+    form = CurriculumForm(request.POST or None, instance=curriculum)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_curriculum_edit', pk1=pk1, pk2=pk2)
+        else : 
+            form = CurriculumForm()
+   
+    objetivos_list = ObjetivoProgramacao.objects.filter(curriculum_id=curriculum.id).order_by('ordem')
+    topicos_list = []
+    atividades_list = []
+    suportes_list = []
+    
+    for obj in objetivos_list :
+        topicos_list.extend(list(TopicoProgramacao.objects.filter(objetivo_id=obj.id)))
+
+    for obj in topicos_list :
+        suportes_list.extend(list(obj.suportes.all()))
+        tas = TopicoAtividade.objects.filter(topico_id=obj.id)
+        for ta in tas :
+            atividades_list.extend(list(AtividadeProgramacao.objects.filter(id=ta.atividade.id)))
+    
+    for obj in atividades_list :
+        suportes_list.extend(list(obj.suportes.all()))
+
+    data = {}
+    data['curso'] = curso
+    data['curriculum'] = curriculum
+    data['form'] = form
+    data['objetivos_list'] = objetivos_list
+    data['topicos_list'] = topicos_list
+    data['atividades_list'] = atividades_list
+    data['suportes_list'] = suportes_list
+    return render(request, template_name, data)
+
+
+def professor_curriculum_delete(request, pk1, pk2, template_name='programacao/professor_curso_curriculum_confirm_delete.html'):
+    curso = get_object_or_404(Curriculum, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)
+    if request.method=='POST':
+        curriculum.delete()
+        curso.curriculum = None
+        return redirect('programacao:professor_curso_edit', pk=pk1)
+    
+    data = {}
+    data['curso'] = curso
+    data['curriculum'] = curriculum
+    return render(request, template_name, data)
+
+
+def professor_curso_objetivo(request, template_name='programacao/professor_curso_objetivo_edit.html'):
+    objetivo_list = ObjetivoProgramacao.objects.all()   
+    if request.method=='POST':
+        form = CursoObjetivoForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_objetivo')
+        else : 
+            form = CursoObjetivoForm()
+
+    form = CursoObjetivoForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    data['objetivo_list'] = objetivo_list
+    return render(request, template_name, data)
+
+
+def professor_curso_objetivo_add(request, pk1, pk2, template_name='programacao/professor_curso_objetivo_edit.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)
+
+    if request.method=='POST':
+        form = CurriculumObjetivoForm(request.POST or None)
+        if form.is_valid():
+            objetivo = form.save(commit=False)
+            objetivo.curriculum = curriculum
+            objetivo.save()
+            
+            return redirect('programacao:professor_curso_curriculum_edit', pk1=pk1, pk2=pk2)
+        else : 
+            form = CurriculumObjetivoForm()
+
+    form = CurriculumObjetivoForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    data['curso_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_curso_objetivo_edit(request, pk1, pk2, template_name='programacao/professor_curso_objetivo_edit.html'):
+    objetivo_list = ObjetivoProgramacao.objects.all()
+    objetivo = get_object_or_404(ObjetivoProgramacao, pk=pk2)
+    form = CursoObjetivoForm(request.POST or None, instance=objetivo)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_objetivo_edit', pk=pk1)
+        else : 
+            form = CursoObjetivoForm()
+
+    data = {}
+    data['objetivo'] = objetivo
+    data['curso_id'] = pk1
+    data['form'] = form
+    data['objetivo_list'] = objetivo_list
+    return render(request, template_name, data)
+
+
+# @login_required()
+def professor_curso_objetivo_delete(request, pk1, pk2, template_name='programacao/professor_curso_objetivo_confirm_delete.html'):
+    objetivo = get_object_or_404(ObjetivoProgramacao, pk=pk2)
+    if request.method=='POST':
+        objetivo.delete()
+        return redirect('programacao:professor_curso_edit', pk=pk1)
+    
+    data = {}
+    data['objetivo'] = objetivo
+    return render(request, template_name, data)
+
+
+def professor_curso_topico(request, template_name='programacao/professor_curso_topico_edit.html'):
+    if request.method=='POST':
+        form = CursoTopicoForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_topico')
+        else : 
+            form = CursoTopicoForm()
+
+    form = CursoTopicoForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_curso_topico_add(request, pk1, pk2, template_name='programacao/professor_curso_topico_edit.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)
+
+    if request.method=='POST':
+        form = CursoTopicoForm(request.POST or None)
+        form.fields["objetivo"].queryset = ObjetivoProgramacao.objects.filter(curriculum_id=curriculum.id)
+        if form.is_valid():
+            form.save()
+            
+            return redirect('programacao:professor_curso_curriculum_edit', pk1=pk1, pk2=pk2)
+        else : 
+            form = CursoTopicoForm()
+
+    form = CursoTopicoForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    data['curso_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_curso_topico_edit(request, pk1, pk2, template_name='programacao/professor_curso_topico_edit.html'):
+    topico = get_object_or_404(TopicoProgramacao, pk=pk2)
+    form = CursoTopicoForm(request.POST or None, instance=topico)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_topico_edit', pk1=pk1, pk2=pk2)
+        else : 
+            form = CursoTopicoForm()
+
+    data = {}
+    data['topico'] = topico
+    data['curso_id'] = pk1
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_curso_topico_delete(request, pk1, pk2, template_name='programacao/professor_curso_topico_confirm_delete.html'):
+    topico = get_object_or_404(TopicoProgramacao, pk=pk2)
+    if request.method=='POST':
+        topico.delete()
+        return redirect('programacao:professor_curso_edit', pk=pk1)
+    
+    data = {}
+    data['topico'] = topico
+    data['curso_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_curso_atividade(request, template_name='programacao/professor_curso_atividade_edit.html'):
+    if request.method=='POST':
+        form = CursoAtividadeForm(request.POST or None)
+        if form.is_valid():
+            atividade = form.save(commit=False)
+            atividade.autor = Professor.objects.get(user_id=request.user.id)
+            atividade.save()
+
+            return redirect('programacao:professor_curso_atividade')
+        else : 
+            form = CursoAtividadeForm()
+
+    form = CursoAtividadeForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_curso_atividade_add(request, pk1, pk2, template_name='programacao/professor_curso_atividade_edit.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)
+
+    if request.method=='POST':
+        form = CursoAtividadeForm(request.POST or None)
+        if form.is_valid():
+            atividade = form.save(commit=False)
+            atividade.autor = Professor.objects.get(user_id=request.user.id)
+            atividade.save()
+            
+            return redirect('programacao:professor_curso_curriculum_edit', pk1=pk1, pk2=pk2)
+        else : 
+            form = CursoAtividadeForm()
+
+    form = CursoAtividadeForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    data['curso_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_curso_atividade_edit(request, pk1, pk2, template_name='programacao/professor_curso_atividade_edit.html'):
+    atividade = get_object_or_404(AtividadeProgramacao, pk=pk2)
+    form = CursoAtividadeForm(request.POST or None, instance=atividade)
+    exercicios = ExercicioPratico.objects.filter(atividade_id=atividade.id)
+
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_atividade_edit', pk1=pk1, pk2=pk2)
+        else :
+            form = CursoAtividadeForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    data['atividade'] = atividade
+    data['curso_id'] = pk1
+    data['exercicios_list'] = exercicios
+    return render(request, template_name, data)
+
+
+def professor_curso_atividade_delete(request, pk1, pk2, template_name='programacao/professor_curso_atividade_confirm_delete.html'):
+    atividade = get_object_or_404(AtividadeProgramacao, pk=pk2)
+    topico_atividade = TopicoAtividade.objects.get(atividade_id=pk2)
+
+    if request.method=='POST':
+        topico_atividade.delete()
+        return redirect('programacao:professor_curso_edit', pk=pk1)
+    
+    data = {}
+    data['atividade'] = atividade
+    data['curso_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_curso_topico_atividade(request, template_name='programacao/professor_curso_topico_atividade.html'):
+    if request.method=='POST':
+        form = CursoTopicoAtividadeForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_topico_atividade')
+        else : 
+            form = CursoTopicoAtividadeForm()
+
+    form = CursoTopicoAtividadeForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_curso_topico_atividade_add(request, pk1, pk2, template_name='programacao/professor_curso_topico_atividade.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)    
+    
+    if request.method=='POST':
+        form = CursoTopicoAtividadeForm(request.POST or None)
+#         form.fields["atividade"].queryset = AtividadeProgramacao.objects.filter(autor_id = request.user.id)
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_curriculum_edit', pk1=pk1, pk2=pk2)
+        else : 
+            form = CursoTopicoAtividadeForm()
+
+    form = CursoTopicoAtividadeForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    data['curso_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_curso_suporte(request, template_name='programacao/professor_curso_suporte_edit.html'):
+    form = CursoSuporteForm(request.POST or None, request.FILES or None)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_suporte')
+        else : 
+            form = CursoSuporteForm()
+
+    data = {}
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_curso_suporte_add(request, pk1, pk2, template_name='programacao/professor_curso_suporte_edit.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)
+
+    if request.method=='POST':
+        form = CursoSuporteForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            
+            return redirect('programacao:professor_curso_curriculum_edit', pk1=pk1, pk2=pk2)
+        else : 
+            form = CursoSuporteForm()
+
+    form = CursoSuporteForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    data['curso_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_curso_suporte_edit(request, pk1, pk2, template_name='programacao/professor_curso_suporte_edit.html'):
+    suporte = get_object_or_404(Suporte, pk=pk2)
+    form = CursoSuporteForm(request.POST or None, request.FILES or None, instance=suporte)
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_suporte_edit', pk=pk2)
+        else : 
+            form = CursoSuporteForm()
+
+    data = {}
+    data['form'] = form
+    data['suporte'] = suporte
+    data['curso_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_curso_suporte_delete(request, pk1, pk2, template_name='programacao/professor_curso_suporte_confirm_delete.html'):
+    suporte = get_object_or_404(Suporte, pk=pk2)
+    if request.method=='POST':
+        topicos = TopicoProgramacao.objects.filter(suportes=suporte) 
+        for t in topicos :
+            t.suportes.remove(suporte)
+        atividades = AtividadeProgramacao.objects.filter(suportes=suporte) 
+        for a in atividades :
+            a.suportes.remove(suporte)
+        return redirect('programacao:professor_curso_edit', pk=pk1)
+    
+    data = {}
+    data['suporte'] = suporte
+    data['curso_id'] = pk1
+    return render(request, template_name, data)
+
+
+def professor_curso_topico_suporte(request, template_name='programacao/professor_curso_topico_suporte.html'):
+    if request.method=='POST':
+        form = TopicoSuporteForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_topico_suporte')
+        else : 
+            form = TopicoSuporteForm()
+
+    form = TopicoSuporteForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    return render(request, template_name, data)
+
+
+def professor_curso_topico_suporte_add(request, pk1, pk2, template_name='programacao/professor_curso_topico_suporte.html'):
+    curso = get_object_or_404(Curso, pk=pk1)
+    curriculum = get_object_or_404(Curriculum, pk=pk2)    
+    
+    if request.method=='POST':
+        form = TopicoSuporteForm(request.POST or None)
+#         form.fields["atividade"].queryset = AtividadeProgramacao.objects.filter(autor_id = request.user.id)
+        if form.is_valid():
+            form.save()
+            return redirect('programacao:professor_curso_curriculum_edit', pk1=pk1, pk2=pk2)
+        else : 
+            form = TopicoSuporteForm()
+
+    form = TopicoSuporteForm(request.POST or None)
+
+    data = {}
+    data['form'] = form
+    data['curso_id'] = pk1
+    return render(request, template_name, data)
+    
+
+    # Curriculum
+    url(r'^professor/curriculum/$', views.professor_curriculum, name='professor_curriculum'),
+    url(r'^professor/curso/(?P<pk>\d+)/curriculum/add$', views.professor_curriculum_add, name='professor_curriculum_add'),
+    url(r'^professor/curso/(?P<pk>\d+)/curriculum/list$', views.professor_curso_curriculum, name='professor_curso_curriculum'),
+    url(r'^professor/curso/(?P<pk1>\d+)/curriculum/(?P<pk2>\d+)$', views.professor_curso_associar_curriculum, name='professor_curso_associar_curriculum'),
+    url(r'^professor/curso/curriculum/edit/(?P<pk>\d+)/$', views.professor_curriculum_edit, name='professor_curriculum_edit'),
+    url(r'^professor/curso/(?P<pk1>\d+)/curriculum/delete/(?P<pk2>\d+)$', views.professor_curriculum_delete, name='professor_curriculum_delete'),
+    url(r'^professor/curso/(?P<pk1>\d+)/curriculum/edit/(?P<pk2>\d+)$', views.professor_curso_curriculum_edit, name='professor_curso_curriculum_edit'),
+    url(r'^professor/curso/objetivo/$', views.professor_curso_objetivo, name='professor_curso_objetivo'),
+    url(r'^professor/curso/(?P<pk1>\d+)/(?P<pk2>\d+)/objetivo/$', views.professor_curso_objetivo_add, name='professor_curso_objetivo_add'),
+    url(r'^professor/curso/(?P<pk1>\d+)/objetivo/edit/(?P<pk2>\d+)/$', views.professor_curso_objetivo_edit, name='professor_curso_objetivo_edit'),
+    url(r'^professor/curso/(?P<pk1>\d+)/objetivo/delete/(?P<pk2>\d+)/$', views.professor_curso_objetivo_delete, name='professor_curso_objetivo_delete'),
+    url(r'^professor/curso/topico/$', views.professor_curso_topico, name='professor_curso_topico'),
+    url(r'^professor/curso/(?P<pk1>\d+)/(?P<pk2>\d+)/topico/$', views.professor_curso_topico_add, name='professor_curso_topico_add'),
+    url(r'^professor/curso/(?P<pk1>\d+)/topico/edit/(?P<pk2>\d+)/$', views.professor_curso_topico_edit, name='professor_curso_topico_edit'),
+    url(r'^professor/curso/(?P<pk1>\d+)/topico/delete/(?P<pk2>\d+)/$', views.professor_curso_topico_delete, name='professor_curso_topico_delete'),
+    url(r'^professor/curso/atividade/$', views.professor_curso_atividade, name='professor_curso_atividade'),
+    url(r'^professor/curso/(?P<pk1>\d+)/(?P<pk2>\d+)/atividade/$', views.professor_curso_atividade_add, name='professor_curso_atividade_add'),
+    url(r'^professor/curso/(?P<pk1>\d+)/atividade/edit/(?P<pk2>\d+)/$', views.professor_curso_atividade_edit, name='professor_curso_atividade_edit'),
+    url(r'^professor/curso/(?P<pk1>\d+)/atividade/delete/(?P<pk2>\d+)/$', views.professor_curso_atividade_delete, name='professor_curso_atividade_delete'),
+    url(r'^professor/curso/suporte/$', views.professor_curso_suporte, name='professor_curso_suporte'),
+    url(r'^professor/curso/(?P<pk1>\d+)/(?P<pk2>\d+)/suporte/$', views.professor_curso_suporte_add, name='professor_curso_suporte_add'),
+    url(r'^professor/curso/(?P<pk1>\d+)/suporte/edit/(?P<pk2>\d+)/$', views.professor_curso_suporte_edit, name='professor_curso_suporte_edit'),
+    url(r'^professor/curso/(?P<pk1>\d+)/suporte/delete/(?P<pk2>\d+)/$', views.professor_curso_suporte_delete, name='professor_curso_suporte_delete'),    
+    url(r'^professor/curso/topico_atividade/$', views.professor_curso_topico_atividade, name='professor_curso_topico_atividade'),
+    url(r'^professor/curso/(?P<pk1>\d+)/(?P<pk2>\d+)/topico_atividade/$', views.professor_curso_topico_atividade_add, name='professor_curso_topico_atividade_add'),
+    url(r'^professor/curso/topico_suporte/$', views.professor_curso_topico_suporte, name='professor_curso_topico_suporte'),
+    url(r'^professor/curso/(?P<pk1>\d+)/(?P<pk2>\d+)/topico_suporte/$', views.professor_curso_topico_suporte_add, name='professor_curso_topico_suporte_add'),        

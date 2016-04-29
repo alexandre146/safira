@@ -17,12 +17,12 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group">
-                            <form action={% url 'programacao:professor_disciplina_alunos' %} method="post">
+                            <form action={% url 'programacao:professor_curso_alunos' %} method="post">
                             {% csrf_token %}
-                                <label>Disciplinas</label>
-                                <select class="form-control" name="disciplina">
-                                    <option selected="true" disabled="true">Selecione uma disciplina</option>
-                                    {% for d in disciplina_list %}
+                                <label>Cursos</label>
+                                <select class="form-control" name="curso">
+                                    <option selected="true" disabled="true">Selecione um curso</option>
+                                    {% for d in curso_list %}
                                         <option value={{ d.id }}>{{ d.titulo }}</option>
                                     {% endfor %}
                                 </select><br>
@@ -46,12 +46,12 @@
 </div>
 <!-- /.row -->
 
-{% if disciplina %}
+{% if curso %}
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                Lista de alunos da disciplina {{ disciplina.titulo }}
+                Lista de alunos do curso {{ curso.titulo }}
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -80,9 +80,8 @@
                             <!-- /.table-responsive -->
                         {% else %}
                             <div class="alert alert-info">
-                                Nenhum aluno inscrito na disciplina!
+                                Nenhum aluno inscrito no curso!
                             </div>
-                                   
                         {% endif %}
                     </div>
                     <!-- /.col-lg-12 (nested) -->

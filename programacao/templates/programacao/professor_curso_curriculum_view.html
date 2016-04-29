@@ -1,0 +1,250 @@
+{% extends "base_mathema.html" %}
+
+{% load bootstrap %}
+
+{% block page_title %} Curriculum Mathema {% endblock %}
+
+{% block main %}
+
+<!-- ############## -->
+<!-- # Curriculum # -->
+<!-- ############## -->
+
+{% if curriculum %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    {{curriculum.titulo}}
+                </h4>
+            </div>
+            <div class="panel-body">
+                <b>Descrição:</b><p>{{curriculum.descricao}}</p>
+                <b>Data criação:</b><p>{{curriculum.dataCriacao}}</p>
+                <b>Autor:</b><p>{{curriculum.autor}}</p>
+            </div>
+            <div class="panel-footer">
+                <a href={% url "programacao:professor_curso_associar_curriculum" curso.id curriculum.id %}><button type="button" class="btn btn-sm btn-success">Importar</button></a>
+                <a href={% url "programacao:professor_curso_edit" curso.id %}><button type="button" class="btn btn-sm btn-primary">Voltar</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ############ -->
+<!-- # Objetivo # -->
+<!-- ############ -->
+
+{% for objetivo in objetivo_list %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel-group" id="accordion{{objetivo.id}}">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion{{objetivo.id}}" href="#objetivo{{objetivo.id}}">{{objetivo.titulo}}</a>
+                    </h4>
+                </div>
+                <div id="objetivo{{objetivo.id}}" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                    <b>Descrição:</b><p>{{objetivo.descricao}}</p>
+                    <b>Autor:</b><p>{{objetivo.autor}}</p>
+<!-- ########## -->
+<!-- # Tópico # -->
+<!-- ########## -->
+                    
+                    {% if objetivo.get_topicos %}
+                    {% for topico in objetivo.get_topicos %}
+                    
+                        <div class="col-lg-12">
+                            <div class="panel-group" id="accordionTopico">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordionTopico" href="#topico{{ topico.id }}">{{ topico.titulo }}</a>
+                                        </h4>
+                                    </div>
+                                    <!-- /.panel-heading -->
+                                    <div id="topico{{ topico.id }}" class="panel-collapse collapse  in">
+                                        <div class="panel-body">
+                                        <b>Descrição:</b><p>{{topico.descricao}}</p>
+                                        <b>Autor:</b><p>{{topico.autor}}</p>
+<!-- ######################### -->
+<!-- # Atividades e suportes # -->
+<!-- ######################### -->
+                                        
+                                        <!-- Atividades e suportes tabs -->
+                                                <!-- Nav tabs -->
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active"><a href="#atividade" data-toggle="tab">Atividades</a>
+                                                    </li>
+                                                    <li><a href="#suporte" data-toggle="tab">Estruturas de suporte</a>
+                                                    </li>
+                                                </ul>
+                                                <!-- Tab panes -->
+                                                <div class="tab-content">
+<!-- ############## -->
+<!-- # Atividades # -->
+<!-- ############## -->
+                                                    <div class="tab-pane fade in active" id="atividade">
+                                                        <br>
+
+                                                        {% if topico.get_atividades %}
+                                                        {% for atividade in topico.get_atividades %}
+
+                                                        <div class="col-lg-12">
+                                                            <div class="panel-group" id="accordionAtividade">
+                                                                <div class="panel panel-primary">
+                                                                    <div class="panel-heading">
+                                                                        <h4 class="panel-title">
+                                                                            <a data-toggle="collapse" data-parent="#accordionAtividade" href="#atividade{{ atividade.id }}">{{ atividade.titulo }}</a>
+                                                                        </h4>
+                                                                    </div>
+                                                                    <!-- /.panel-heading -->
+                                                                    <div id="atividade{{ atividade.id }}" class="panel-collapse collapse in">
+                                                                        <div class="panel-body">
+                                                                        <b>Descrição:</b><p>{{atividade.descricao}}</p>
+                                                                        <b>Autor:</b><p>{{atividade.autor}}</p>
+<!-- ######################### -->
+<!-- # Suportes da atividade # -->
+<!-- ######################### -->
+                                                                            <br>
+                                                                            {% if atividade.get_suportes %}
+                                                                            {% for suporte in atividade.get_suportes %}
+                                                                                                                                                       
+                                                                            <div class="col-lg-12">
+                                                                                <div class="panel-group" id="accordionSuporte">
+                                                                                    <div class="panel panel-primary">
+                                                                                        <div class="panel-heading">
+                                                                                            <h4 class="panel-title">
+                                                                                                <a data-toggle="collapse" data-parent="#accordionSuporte" href="#suporte{{ suporte.id }}">{{ suporte.titulo }} ({{ suporte.tipo }})</a>
+                                                                                            </h4>
+                                                                                        </div>
+                                                                                        <!-- /.panel-heading -->
+                                                                                        <div id="suporte{{ suporte.id }}" class="panel-collapse collapse in">
+                                                                                            <div class="panel-body">
+                                                                                                {% if suporte.arquivo %}
+                                                                                                    <a href="{{ MEDIA_URL }}{{ suporte.arquivo }}" target="blank"><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-download"></i> Download</button></a>
+                                                                                                {% endif %}
+                                                                                                {% if suporte.link %}
+                                                                                                    <a href="{{ suporte.link }}" target="blank"><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-play"></i> Play</button></a>
+                                                                                                {% endif %}
+                                                                                            </div>
+                                                                                            <!-- panel-body -->
+                                                                                        </div>
+                                                                                        <!-- panel-collapse -->
+                                                                                        <div class="panel-footer">
+                                                                                        </div>
+                                                                                        <!-- panel-footer -->
+                                                                                    </div>
+                                                                                    <!-- panel-primary -->
+                                                                                </div>
+                                                                                <!-- panel-group -->
+                                                                            </div>
+                                                                            <!-- col-lg-12 -->
+                                                                            
+                                                                            {% endfor %}
+                                                                            {% endif %}
+                                                                            <br>
+
+                                                                        </div>
+                                                                        <!-- panel-body -->
+                                                                        
+                                                                    </div>
+                                                                    <!-- panel-collapse -->
+                                                                    <div class="panel-footer">
+                                                                    </div>
+                                                                    <!-- panel-footer -->
+                                                                </div>
+                                                                <!-- panel-primary -->
+                                                            </div>
+                                                            <!-- panel-group -->
+                                                        </div>
+                                                        <!-- col-lg-12 -->
+                                                        
+                                                        {% endfor %}
+                                                        {% endif %}
+                                                        <br>
+                                                    </div>
+<!-- ###################### -->
+<!-- # Suportes do tópico # -->
+<!-- ###################### -->
+                                                    <div class="tab-pane fade" id="suporte">
+                                                        <br>
+                                                        {% if topico.get_suportes %}
+                                                        {% for suporte in topico.get_suportes %}
+                                                                                                               
+                                                        <div class="col-lg-12">
+                                                            <div class="panel-group" id="accordionSuporte">
+                                                                <div class="panel panel-primary">
+                                                                    <div class="panel-heading">
+                                                                        <h4 class="panel-title">
+                                                                            <a data-toggle="collapse" data-parent="#accordionSuporte" href="#suporte{{ suporte.id }}">{{ suporte.titulo }} ({{ suporte.tipo }})</a>
+                                                                        </h4>
+                                                                    </div>
+                                                                    <!-- /.panel-heading -->
+                                                                    <div id="suporte{{ suporte.id }}" class="panel-collapse collapse in">
+                                                                        <div class="panel-body">
+                                                                            {% if suporte.arquivo %}
+                                                                                <a href="{{ MEDIA_URL }}{{ suporte.arquivo }}" target="blank"><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-download"></i> Download</button></a>
+                                                                            {% endif %}
+                                                                            {% if suporte.link %}
+                                                                                <a href="{{ suporte.link }}" target="blank"><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-play"></i> Play</button></a>
+                                                                            {% endif %}
+                                                                        </div>
+                                                                        <!-- panel-body -->
+                                                                    </div>
+                                                                    <!-- panel-collapse -->
+                                                                    <div class="panel-footer">
+                                                                    </div>
+                                                                    <!-- panel-footer -->
+                                                                </div>
+                                                                <!-- panel-primary -->
+                                                            </div>
+                                                            <!-- panel-group -->
+                                                        </div>
+                                                        <!-- col-lg-12 -->
+                                                        
+                                                        {% endfor %}
+                                                        {% endif %}
+                                                        <br>
+                                                    </div>
+                                                </div>
+                                                <!-- /.tab-content -->
+                                        </div>
+                                        <!-- /.panel-body -->
+                                    </div>
+                                    <!-- /.panel-collapse -->
+                                    <div class="panel-footer">
+                                    </div>
+                                    <!-- /.panel-footer -->
+                                </div>
+                                <!-- /.panel-primary -->
+                            </div>
+                            <!-- /.panel-group -->
+                        </div>
+                        <!-- /.col-lg-12 -->
+    
+                        {% endfor %}
+                        {% endif %}
+   
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <div class="panel-footer">
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endfor %}
+
+{% endif %}
+
+{% endblock %}

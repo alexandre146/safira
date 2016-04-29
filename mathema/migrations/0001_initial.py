@@ -2,11 +2,13 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -16,7 +18,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('titulo', models.CharField(max_length=200)),
                 ('descricao', models.CharField(max_length=300, null=True, blank=True)),
-                ('autor', models.CharField(max_length=200)),
+                ('deadline', models.DateTimeField(null=True, blank=True)),
+                ('autor', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -40,7 +43,7 @@ class Migration(migrations.Migration):
                 ('titulo', models.CharField(max_length=200)),
                 ('descricao', models.CharField(max_length=500)),
                 ('dataCriacao', models.DateTimeField(null=True, blank=True)),
-                ('autor', models.CharField(max_length=200)),
+                ('autor', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -53,7 +56,7 @@ class Migration(migrations.Migration):
                 ('titulo', models.CharField(max_length=100)),
                 ('descricao', models.CharField(max_length=300, null=True, blank=True)),
                 ('ordem', models.IntegerField(null=True, blank=True)),
-                ('autor', models.CharField(max_length=200)),
+                ('autor', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
                 ('curriculum', models.ForeignKey(to='mathema.Curriculum')),
             ],
             options={
@@ -68,7 +71,7 @@ class Migration(migrations.Migration):
                 ('arquivo', models.FileField(null=True, upload_to=b'suporte', blank=True)),
                 ('link', models.URLField(null=True, blank=True)),
                 ('visualizacoes', models.IntegerField(null=True, blank=True)),
-                ('autor', models.CharField(max_length=200)),
+                ('autor', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -91,7 +94,6 @@ class Migration(migrations.Migration):
                 ('titulo', models.CharField(max_length=100)),
                 ('descricao', models.CharField(max_length=300, null=True, blank=True)),
                 ('ordem', models.IntegerField(null=True, blank=True)),
-                ('autor', models.CharField(max_length=200)),
             ],
             options={
             },
@@ -125,6 +127,12 @@ class Migration(migrations.Migration):
             model_name='topico',
             name='atividades',
             field=models.ManyToManyField(to='mathema.Atividade', null=True, through='mathema.TopicoAtividade', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='topico',
+            name='autor',
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
             preserve_default=True,
         ),
         migrations.AddField(

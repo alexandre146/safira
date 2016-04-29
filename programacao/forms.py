@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.forms import ModelForm
 from django.contrib.auth.models import User
+from django.forms import ModelForm
 from django.forms.widgets import DateTimeInput
 
-from programacao.models import Aluno, Professor, Curso, AlunoCurso,\
-    ObjetivoProgramacao, TopicoProgramacao, AtividadeProgramacao,\
-    ExercicioPratico, AlunoSubmissaoExercicioPratico, Curriculum, Interacao
-from mathema.models import TopicoAtividade, Suporte
+from programacao.models import Aluno, Professor, Curso, \
+    ExercicioPratico, AlunoSubmissaoExercicioPratico
+
 
 class RegistroForm(ModelForm):
     username = forms.CharField(widget=forms.TextInput(), label="Login")
@@ -72,70 +71,16 @@ class CursoEditForm(ModelForm):
         fields = ['titulo']
 
 
-class CurriculumForm(ModelForm):
-    class Meta:
-        model = Curriculum
-        fields = ['titulo', 'descricao']
-
-
-class CurriculumObjetivoForm(ModelForm):
-    class Meta:
-        model = ObjetivoProgramacao
-        fields = ['titulo', 'descricao', 'ordem']
-
-
-class CursoObjetivoForm(ModelForm):
-    class Meta:
-        model = ObjetivoProgramacao
-        fields = ['curriculum', 'titulo', 'descricao', 'ordem']
-
-
-class CursoTopicoForm(ModelForm):
-    class Meta:
-        model = TopicoProgramacao
-        fields = ['objetivo', 'titulo', 'descricao', 'ordem', 'topicoPai']
-
-
-class CursoAtividadeForm(ModelForm):
-    class Meta:
-        model = AtividadeProgramacao
-        fields = ['titulo', 'descricao', 'deadline', 'suportes']
-        widgets = {
-            'deadline': forms.DateTimeInput(attrs={'type':'datetime'}),
-        }
-
-
-class CursoTopicoAtividadeForm(ModelForm):
-    class Meta:
-        model = TopicoAtividade
-        fields = ['topico', 'atividade', 'ordem']
-
-
-class CursoSuporteForm(ModelForm):
-    class Meta:
-        model = Suporte
-        fields = ['titulo', 'tipo', 'arquivo', 'link']
-
-
 class ExercicioForm(ModelForm):
     class Meta:
         model = ExercicioPratico
-        fields = ['enunciado', 'arquivoTeste', 'arquivoSolucao']
+        fields = ['titulo', 'enunciado', 'arquivoTeste', 'arquivoSolucao']
 
 
 class AlunoSubmissaoExercicioPraticoForm(ModelForm):
     class Meta:
         model = AlunoSubmissaoExercicioPratico
-        fields = ['arquivo']
-        
-
-class InteracaoForm(ModelForm):
-    class Meta:
-        model = Interacao
-        fields = ['titulo', 'ordem']
-
-        
-# class AlunoDisciplinaForm(ModelForm):
-#     class Meta:
-#         model = AlunoDisciplina
-#         fields = ['aluno', 'disciplina']
+        fields = ['arquivo', 'dataEnvio']
+        widgets = {
+            'dataEnvio': forms.DateTimeInput(attrs={'type':'datetime'}, format='%d/%m/%Y'),
+        }

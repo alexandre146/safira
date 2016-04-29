@@ -2,10 +2,12 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.forms.models import ModelForm
 import os
+import subprocess
+from django.core.files import File
 
-from mathema.models import Objetivo, Topico, Atividade, Suporte, Curriculum
-
+from mathema.models import Atividade, Curriculum
 
 class Professor(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -57,7 +59,7 @@ class Curso(models.Model):
     titulo = models.CharField(max_length=200)
     professor = models.ForeignKey(Professor)
     alunos = models.ManyToManyField(Aluno, through='AlunoCurso', null=True, blank=True)
-    curriculum = models.ForeignKey(Curriculum, null=True, blank=True)
+    curriculum = models.ForeignKey(Curriculum, null=True, blank=True, on_delete=models.SET_NULL)
     
     def __unicode__(self):
         return "%s (%s)" % (self.titulo, self.professor)
@@ -76,58 +78,15 @@ class AlunoCurso(models.Model):
     def get_absolute_url(self):
         return reverse(viewname='programacao:aluno_curso_edit', kwargs={'pk': self.pk})
 
-
-class Interacao(models.Model):
-    titulo = models.CharField(max_length=200)
-    curso = models.ForeignKey(Curso)
-    ordem = models.IntegerField(null=True, blank=True)
-
-    def __unicode__(self):
-        return (self.titulo)
-
-    def get_absolute_url(self):
-        return reverse(viewname='programacao:curso_interacao_edit', kwargs={'pk': self.pk})
-    
-
-class ObjetivoProgramacao(Objetivo):
-    curriculum_temp = models.ForeignKey(Curriculum)
-    interacao = models.ForeignKey(Interacao, null=True, blank=True)
-    
-    def __unicode__(self):
-        return (self.titulo)
-
-    def get_absolute_url(self):
-        return reverse(viewname='programacao:curso_objetivo_edit', kwargs={'pk': self.pk})
-
-
-class TopicoProgramacao(Topico):
-    interacao = models.ForeignKey(Interacao, null=True, blank=True)
-   
-    def __unicode__(self):
-        return (self.titulo)
-
-    def get_absolute_url(self):
-        return reverse(viewname='programacao:professor_curso_topico_edit', kwargs={'pk': self.pk})
-    
-
-class AtividadeProgramacao(Atividade):
-    deadline = models.DateTimeField(null=True, blank=True)
-    interacao = models.ForeignKey(Interacao, null=True, blank=True)
-
-    def __unicode__(self):
-        return (self.titulo)
-
-    def get_absolute_url(self):
-        return reverse(viewname='programacao:professor_curso_atividade_edit', kwargs={'pk': self.pk})
- 
     
 # file will be uploaded to MEDIA_ROOT/submissao/<username>/<filename>
 def user_teste_directory_path(instance, filename):
-    return 'teste/{0}/{1}'.format(instance.atividade.autor.user.username, filename)   
+    return 'teste/{0}/{1}'.format(instance.atividade.autor.username, filename)   
 
 
 class ExercicioPratico(models.Model):
-    atividade = models.ForeignKey(AtividadeProgramacao)
+    atividade = models.ForeignKey(Atividade)
+    titulo = models.CharField(max_length=200)
     enunciado = models.CharField(max_length=200)
     arquivoTeste = models.FileField(upload_to=user_teste_directory_path, verbose_name='Arquivo de testes unitarios' , null=True, blank=True)
     arquivoSolucao = models.FileField(upload_to=user_teste_directory_path, verbose_name='Arquivo da solucao de referencia' , null=True, blank=True)
@@ -137,6 +96,15 @@ class ExercicioPratico(models.Model):
 
     def get_absolute_url(self):
         return reverse(viewname='programacao:professor_curso_atividade_exercicio_edit', kwargs={'pk': self.pk})
+
+    def get_edit_form(self):
+        return ExercicioPraticoEditForm(instance=self)
+
+
+class ExercicioPraticoEditForm(ModelForm):
+    class Meta:
+        model = ExercicioPratico
+        fields = ['titulo', 'enunciado', 'arquivoTeste', 'arquivoSolucao']
 
     
 # file will be uploaded to MEDIA_ROOT/submissao/<username>/<filename>
@@ -156,14 +124,17 @@ class AlunoSubmissaoExercicioPratico(models.Model):
 
     def get_absolute_url(self):
         return reverse(viewname='programacao:aluno_atividade_exercicio_submissao_edit', kwargs={'pk': self.pk})
-    
 
-class SuporteProgramacao(Suporte):
-    interacao = models.ForeignKey(Interacao, null=True, blank=True)
+
+class Avaliador(models.Model):
+    tipo = models.CharField(max_length=200)
     
     def __unicode__(self):
-        return (self.titulo + "(" + self.tipo + ")")
-
-    def get_absolute_url(self):
-        return reverse(viewname='programacao:professor_curso_suporte', kwargs={'pk': self.pk})
-
+        return ('Avaliador ' + self.tipo)
+    
+    def avaliar(self, exercicio, submissoes, professor):
+        testFile = str(exercicio.arquivoTeste)
+        for submissao in submissoes:
+            submissaoFile = str(submissao.arquivo)
+            
+            subprocess.call('python ' + settings.MEDIA_ROOT + '/' + testFile + ' ' + settings.MEDIA_ROOT + ' ' + submissaoFile + ' ' + professor.user.username +' ' + str(submissao.id), shell=True)
