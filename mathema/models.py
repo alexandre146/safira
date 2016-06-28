@@ -54,12 +54,12 @@ class Atividade(models.Model):
 #     slug=models.SlugField(max_length=100,blank=True,unique=True,db_index=True)
     titulo = models.CharField(max_length=200)
     descricao = models.CharField(max_length=300, null=True, blank=True)
-    suportes = models.ManyToManyField(Suporte, through='AtividadeSuporte', null=True, blank=True)
+    suportes = models.ManyToManyField(Suporte, through='AtividadeSuporte', blank=True)
     autor = models.ForeignKey(settings.AUTH_USER_MODEL)
     deadline = models.DateTimeField(null=True, blank=True)
 
-    arquivo=models.FileField(upload_to='atividades/arquivos/atividades')
-    curso=models.ForeignKey('Disciplina')
+    arquivo=models.FileField(upload_to='atividades/arquivos/atividades', null=True, blank=True)
+    #curso=models.ForeignKey('Curso')
 
     def __unicode__(self):
         return self.titulo
@@ -191,8 +191,8 @@ class Topico(models.Model):
     titulo = models.CharField(max_length=100)
     descricao = models.CharField(max_length=300, null=True, blank=True)
     ordem = models.PositiveIntegerField(null=True, blank=True)
-    suportes = models.ManyToManyField(Suporte, through='TopicoSuporte', null=True, blank=True)
-    atividades = models.ManyToManyField(Atividade, through='TopicoAtividade', null=True, blank=True)
+    suportes = models.ManyToManyField(Suporte, through='TopicoSuporte', blank=True)
+    atividades = models.ManyToManyField(Atividade, through='TopicoAtividade', blank=True)
     autor = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     def __unicode__(self):              # __unicode__ on Python 2
