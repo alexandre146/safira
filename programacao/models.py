@@ -56,10 +56,14 @@ class Aluno(models.Model):
 
 
 class Curso(models.Model):
+#     slug=models.SlugField(blank=True,max_length=100,unique=True,db_index=True)
     titulo = models.CharField(max_length=200)
     professor = models.ForeignKey(Professor)
     alunos = models.ManyToManyField(Aluno, through='AlunoCurso', null=True, blank=True)
     curriculum = models.ForeignKey(Curriculum, null=True, blank=True, on_delete=models.SET_NULL)
+
+    semestre=models.CharField(help_text="Ex: 2014.1",max_length=20,choices=())
+    data_criacao=models.DateTimeField(auto_now=True)
     
     def __unicode__(self):
         return "%s (%s)" % (self.titulo, self.professor)

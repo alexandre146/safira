@@ -51,11 +51,15 @@ class SuporteEditForm(ModelForm):
         
 
 class Atividade(models.Model):
+#     slug=models.SlugField(max_length=100,blank=True,unique=True,db_index=True)
     titulo = models.CharField(max_length=200)
     descricao = models.CharField(max_length=300, null=True, blank=True)
     suportes = models.ManyToManyField(Suporte, through='AtividadeSuporte', null=True, blank=True)
     autor = models.ForeignKey(settings.AUTH_USER_MODEL)
     deadline = models.DateTimeField(null=True, blank=True)
+
+    arquivo=models.FileField(upload_to='atividades/arquivos/atividades')
+    curso=models.ForeignKey('Disciplina')
 
     def __unicode__(self):
         return self.titulo
